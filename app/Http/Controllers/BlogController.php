@@ -16,9 +16,26 @@ class BlogController extends Controller
 
     // }
 
- public function index(Request $request)
+//  public function index(Request $request)
+// {
+//     $blogs = Blog::latest()->simplePaginate(2);
+
+//     if ($request->ajax()) {
+//         return view('blogs.main_blogs.blogs', compact('blogs'))->render();
+//     }
+
+//     return view('blogs.main_blogs.index', compact('blogs'));
+// }
+
+
+
+public function index(Request $request)
 {
-    $blogs = Blog::latest()->simplePaginate(2);
+    if (auth()->user()->role === 'admin') {
+        $blogs = Blog::latest()->simplePaginate(2);
+    } else {
+        $blogs = Blog::where('user_id', auth()->id())->latest()->simplePaginate(2);
+    }
 
     if ($request->ajax()) {
         return view('blogs.main_blogs.blogs', compact('blogs'))->render();

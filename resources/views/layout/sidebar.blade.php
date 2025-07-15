@@ -8,7 +8,7 @@
                 <div class="profile-pic">
                     <div class="count-indicator">
                         <img class="img-xs rounded-circle"
-                            src="{{ isset(Auth::user()->image) ? asset('storage/profile_image/' . Auth::user()->image) : asset('images/faces/face1.jpg') }}"
+                            src="{{ isset(Auth::user()->image) ? asset('storage/profile_image/' . Auth::user()->image) : asset('images/faces/face2.jpg') }}"
                             alt="image">
                         <span class="count bg-success"></span>
                     </div>
