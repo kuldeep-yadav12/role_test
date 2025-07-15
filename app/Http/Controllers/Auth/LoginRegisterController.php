@@ -10,45 +10,30 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginRegisterController extends Controller
 {
-   
-
     public function showLogin()
-    { 
+    {
         return view('auth.login');
-     }
-
-
+    }
+        
    public function login(Request $request)
-   {
-       $users = $request->validate([
-           'username'  => 'required',
-           'useremail'    => 'required',
-           'userpass' => 'required',
-       ]);
+{
+    $users = $request->validate([
+        'name' =>'required',
+        'email'    => 'required|email',
+        'password' => 'required',
+    ]);
 
+    $user = User::where('email', $users['email'])->first();
 
-       if(Auth::attempt($users)){
-        return redirect()->route('/')
-         ->with('status','User is Logged In Successfully');
-       }else{
-        return redirect()->route('register')
-         ->with('status','Please fill the Register Form First');
-       }
+    if (!$user) {
+        return redirect()->route('register')->with('status', 'You are not registered. Please register first.');
+    }
 
+    if (Auth::attempt($users)) {
+        return redirect('/')->with('status', 'Logged in successfully');
+    }
+
+    return redirect()->route('login')->with('status', 'Invalid credentials. Try again.');
 }
 
-public function Dashboard(){
-if(Auth::check()){
-    return view();
-}else{
- return redirect()->route('login')
-         ->with('status','Please Login First');
-}
-
-}
-
-public function logout(){
-    Auth::logout();
-    return view('auth.login');
-}
 }
