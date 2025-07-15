@@ -15,29 +15,25 @@ class LoginRegisterController extends Controller
         return view('auth.login');
     }
         
-    public function login(Request $request)
+   public function login(Request $request)
 {
-    $credentials = $request->validate([
+    $users = $request->validate([
+        'name' =>'required',
         'email'    => 'required|email',
         'password' => 'required',
     ]);
 
-    $user = User::where('email', $credentials['email'])->first();
+    $user = User::where('email', $users['email'])->first();
 
     if (!$user) {
         return redirect()->route('register')->with('status', 'You are not registered. Please register first.');
     }
 
-    
-    if (Auth::attempt($credentials)) {
-        $user = Auth::user();
-
-        return $user->role === 'admin'
-            ? redirect()->route('/')->with('status', 'Admin logged in')
-            : redirect()->route('')->with('status', 'User logged in');
+    if (Auth::attempt($users)) {
+        return redirect('/')->with('status', 'Logged in successfully');
     }
 
-    return redirect()->route('login')->with('status', 'Invalid data.');
+    return redirect()->route('login')->with('status', 'Invalid credentials. Try again.');
 }
 
 }
