@@ -31,7 +31,7 @@
             </a>
         </li>
         <li class="nav-item menu-items">
-            <a class="nav-link" href="{{ route("home") }}">
+            <a class="nav-link" href="{{ route('user.list') }}">
                 <span class="menu-icon">
                     <i class="mdi mdi-speedometer"></i>
                 </span>

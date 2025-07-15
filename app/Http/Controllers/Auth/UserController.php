@@ -53,6 +53,12 @@ public function home()
     return view('home', compact('users','userCount'));
 }
 
+public function listAll()
+{
+    $users = User::all();
+    return view('users', compact('users'));
+}
+
 
     // Show edit form
     public function edit($id)
