@@ -40,14 +40,14 @@
              </ul>
 
              <ul class="navbar-nav ms-auto">
-                 @guest
+                 @auth
                      <li class="nav-item">
                          <a class="nav-link {{ request()->is('login') ? 'active' : '' }}"
                              href="{{ route ("logout") }}">Logout</a>
                      </li>
                      <li class="nav-item">
-                         <a class="nav-link {{ request()->is('register') ? 'active' : '' }}"
-                             href="{{ route ("user.store") }}">Register</a>
+                       <a class="nav-link {{ request()->is('register') ? 'active' : '' }}" href="{{ route('user.store') }}">Register</a>
+
                      </li>
                  @else
                      {{-- <li class="nav-item dropdown">
@@ -57,7 +57,7 @@
                          </a>
 
                      </li> --}}
-                 @endguest
+                 @endauth
              </ul>
              {{-- <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
                  data-toggle="offcanvas">
