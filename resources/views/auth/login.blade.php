@@ -11,11 +11,20 @@
     <div class="row d-flex justify-content-center">
         <div class="col-4 p-5 bg-info-subtle mt-5 rounded-4">
             <h2 class="mb-4">Login Users</h2>
+            <div class="div">
+    <div class="row">
+        <div class="col">
             @if (session('status'))
-                <div class="alert alert-success">
+           <div class="div alert alert-success">
                     {{ session('status') }}
                 </div>
+                
             @endif
+        </div>
+    </div>
+ </div>
+           <div class="row">
+            <div class="col-9">
             <form action="{{ route('login.submit') }}" method="POST">
                 @csrf
                 <div class="mb-3">
@@ -41,7 +50,6 @@
                 <button type="submit" class="btn btn-primary w-100">LOGIN</button>
             </form>
 
-        </div>
     </div>
    </div>
 </body>
