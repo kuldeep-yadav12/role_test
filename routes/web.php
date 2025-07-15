@@ -7,6 +7,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
+Route::get('/', function () {
+    if (!Auth::check()) {
+        return redirect()->route('login')->with('status', 'Please login first.');
+    }
+
+    $user = Auth::user();
+
+    return view('home', compact('user'));
+})->name('home');
+
 Route::get('/register', [UserController::class, 'index']);
 Route::post('/register', [UserController::class, 'store'])->name('user.store');
 
@@ -23,4 +33,3 @@ Route::prefix('blogs')->name('blog.')->group(function () {
 
 Route::get('/login', [LoginRegisterController::class, 'showLogin'])->name('login');
 Route::post('/loginUser', [LoginRegisterController::class, 'login'])->name('login.submit');
-

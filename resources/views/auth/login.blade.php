@@ -7,16 +7,6 @@
 @section('content')
 <form action="{{ route('login.submit') }}" method="POST">
   @csrf
-<div class="mb-2">
-        <label class="form-label">Username</label>
-        <input type="text"  class="form-control @error('username') is-invalid @enderror" name="name">
-        <span class="text-danger">
-          @error('username')
-            {{ $message }}
-          @enderror
-        </span>
-      </div>
-
       <div class="mb-2">
         <label class="form-label">Email</label>
         <input type="email"  class="form-control @error('useremail') is-invalid @enderror" name="email">
