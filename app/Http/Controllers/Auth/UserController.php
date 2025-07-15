@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -92,7 +93,11 @@ public function home()
     {
         $user = User::findOrFail($id);
         $user->delete();
+        
+        if (User::count() === 0) {
+        DB::statement('ALTER TABLE users AUTO_INCREMENT = 1');
+    }
 
-        return redirect('/home')->with('success', 'User deleted successfully!');
+        return redirect('/')->with('success', 'User deleted successfully!');
     }
 }
