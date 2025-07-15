@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<form action="{{ route('user') }}" method="POST">
+<form action="{{ route('login.submit') }}" method="POST">
   @csrf
 <div class="mb-2">
         <label class="form-label">Username</label>
