@@ -30,7 +30,6 @@
  <div class="row">
             <div class="col-9">
        @yield('content')
-
      
     </div>
    </div> 
