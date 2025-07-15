@@ -16,7 +16,7 @@ Route::get('/', function () {
         return view('auth.login'); 
     }
 
-    return app(UserController::class)->home();
+    return app(UserController::class)->home(); 
 })->name('home');
 
 Route::get('/register', [UserController::class, 'index']);

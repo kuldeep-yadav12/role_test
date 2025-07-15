@@ -9,12 +9,25 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $blogs = Blog::all();
-        return view('blogs.main_blogs.index', compact('blogs'));
+    // public function index()
+    // {
+    //     $blogs = Blog::latest()->simplepaginate(2);
+    //     return view('blogs.main_blogs.index', compact('blogs'));
 
+    // }
+
+ public function index(Request $request)
+{
+    $blogs = Blog::latest()->simplePaginate(2);
+
+    if ($request->ajax()) {
+        return view('blogs.main_blogs.blogs', compact('blogs'))->render();
     }
+
+    return view('blogs.main_blogs.index', compact('blogs'));
+}
+
+
 
     /**
      * Show the form for creating a new resource.

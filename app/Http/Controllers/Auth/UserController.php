@@ -47,7 +47,7 @@ class UserController extends Controller
     // Show user profile
 public function home()
 {
-    $users = User::all(); 
+    $users = User::all(); ;
     $userCount = User::count();
 
     return view('home', compact('users','userCount'));
