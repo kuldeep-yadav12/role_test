@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+class UserController extends Controller
+{
+    // Show registration form
+    public function index()
+    {
+        return view('auth.register');
+    }
+
+    // Store user registration
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'gender' => 'required|in:Male,Female',
+            'age' => 'required|integer|min:1',
+            'phone' => 'nullable|digits_between:10,15',
+            'hobbies' => 'nullable|array',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = new User();
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->gender = $validated['gender'];
+        $user->age = $validated['age'];
+        $user->phone = $validated['phone'];
+        $user->hobbies = implode(',', $validated['hobbies'] ?? []);
+        $user->password = Hash::make($validated['password']);
+        $user->role = 'system_user';
+        $user->save();
+
+        return redirect()->route('home')->with('success', 'User registered successfully!');
+
+    }
+
+    // Show user profile
+public function home()
+{
+    $users = User::all(); 
+    return view('home', compact('users'));
+}
+
+
+    // Show edit form
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        return view('auth.edit', compact('user'));
+    }
+
+    // Update user info
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'gender' => 'required|in:Male,Female',
+            'age' => 'required|integer|min:1',
+            'phone' => 'nullable|digits_between:10,15',
+            'hobbies' => 'nullable|array',
+            'role' => 'required|string'
+        ]);
+
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'gender' => $validated['gender'],
+            'age' => $validated['age'],
+            'phone' => $validated['phone'],
+            'hobbies' => implode(',', $validated['hobbies'] ?? []),
+            'role' => $validated['role']
+        ]);
+
+       return redirect()->route('home')->with('success', 'User registered successfully!');
+
+    }
+
+    // Delete user
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect('/home')->with('success', 'User deleted successfully!');
+    }
+}

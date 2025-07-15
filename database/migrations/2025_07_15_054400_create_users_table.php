@@ -20,7 +20,7 @@ return new class extends Migration
         $table->string('phone')->unique();
         $table->text('hobbies'); 
         $table->string('password');
-        $table->string('role')->default('user');
+        $table->string('role')->default('system_user');
         $table->timestamps();
         });
     }
