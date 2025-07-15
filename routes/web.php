@@ -11,6 +11,7 @@ Route::get('/', function () {
 
 
 Route::get('/login', [LoginRegisterController::class, 'showLogin'])->name('user.login');
+Route::get('/Dashboard', [LoginRegisterController::class, 'Dashboard']);
 Route::post('/loginUser', [LoginRegisterController::class, 'login'])->name('user');
 Route::post('/logout', [LoginRegisterController::class, 'logout'])->name('user.logout');
 
