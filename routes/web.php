@@ -5,10 +5,17 @@ use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Auth\LoginRegisterController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Route::get('register', [AdminController::class, 'index']);
 Route::post('/register', [AdminController::class, 'store'])->name('user.store');
 
+
+
+
+Route::get('/login', [LoginRegisterController::class, 'showLogin'])->name('user.login');
+Route::get('/Dashboard', [LoginRegisterController::class, 'Dashboard']);
+Route::post('/loginUser', [LoginRegisterController::class, 'login'])->name('user');
+Route::post('/logout', [LoginRegisterController::class, 'logout'])->name('user.logout');
 
