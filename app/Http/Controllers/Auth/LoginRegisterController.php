@@ -22,13 +22,15 @@ class LoginRegisterController extends Controller
         'password' => 'required',
     ]);
 
+   
     $user = User::where('email', $users['email'])->first();
 
     if (!$user) {
         return redirect('/register')->with('status', 'You are not registered. Please register first.');
     }
 
-    if (Auth::attempt($users)) {
+    if (Hash::check($users['password'], $user->password)) {
+        Auth::login($user); 
         return redirect('/')->with('status', 'Logged in successfully');
     }
 
