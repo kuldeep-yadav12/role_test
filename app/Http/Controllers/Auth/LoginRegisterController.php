@@ -17,13 +17,12 @@ class LoginRegisterController extends Controller
 
     public function login(Request $request)
     {
-        $users = $request->validate([
-            'name'=> 'required',
+        $credentials = $request->validate([
             'email'    => 'required|email',
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($users)) {
+        if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
             return $user->role === 'admin'
@@ -42,40 +41,58 @@ class LoginRegisterController extends Controller
 
     public function index()
     {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Unauthorized.');
+        }
+
         $users = User::all();
         return view('admin.users.index', compact('users'));
     }
 
     public function update(Request $request, $id)
     {
+        $authUser = Auth::user();
         $user = User::findOrFail($id);
 
-        if (Auth::user()->role !== 'admin' && Auth::id() != $user->id) {
+        if ($authUser->role !== 'admin' && $authUser->id !== $user->id) {
             abort(403, 'Unauthorized.');
         }
 
-        $user->update($request->only(['name', 'email', 'password']));
-        return back()->with('success', 'User updated.');
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6',
+        ]);
+
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return back()->with('success', 'User updated successfully.');
     }
 
     public function destroy($id)
     {
+        $authUser = Auth::user();
         $user = User::findOrFail($id);
 
-        if (Auth::user()->role !== 'admin' && Auth::id() != $user->id) {
+        if ($authUser->role !== 'admin' && $authUser->id !== $user->id) {
             abort(403, 'Unauthorized.');
         }
 
         $user->delete();
 
-        if (Auth::id() == $id) {
+        if ($authUser->id === $user->id) {
             Auth::logout();
             return redirect('/')->with('status', 'Your account has been deleted.');
         }
 
-        return back()->with('success', 'User deleted.');
+        return back()->with('success', 'User deleted successfully.');
     }
-
 
     public function show()
     {
@@ -85,11 +102,24 @@ class LoginRegisterController extends Controller
     public function updateOwn(Request $request)
     {
         $user = Auth::user();
-        $user->update($request->only(['name', 'email', 'password']));
-        return back()->with('success', 'Profile updated.');
+
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6',
+        ]);
+
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return back()->with('success', 'Your profile has been updated.');
     }
 
-    // User: Delete own profile
     public function deleteOwn()
     {
         $user = Auth::user();
@@ -99,10 +129,12 @@ class LoginRegisterController extends Controller
         return redirect('/')->with('status', 'Your account has been deleted.');
     }
 
-    // Admin: dashboard view (can be empty or just a welcome)
     public function dashboard()
     {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Unauthorized.');
+        }
+
         return view('admin.dashboard');
     }
 }
-
