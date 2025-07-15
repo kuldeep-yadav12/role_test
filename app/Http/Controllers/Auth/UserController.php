@@ -40,7 +40,7 @@ class UserController extends Controller
         $user->role = 'system_user';
         $user->save();
 
-        return redirect()->route('home')->with('success', 'User registered successfully!');
+        return redirect()->route('login')->with('success', 'User registered successfully!');
 
     }
 
@@ -48,7 +48,9 @@ class UserController extends Controller
 public function home()
 {
     $users = User::all(); 
-    return view('home', compact('users'));
+    $userCount = User::count();
+
+    return view('home', compact('users','userCount'));
 }
 
 
@@ -70,8 +72,7 @@ public function home()
             'gender' => 'required|in:Male,Female',
             'age' => 'required|integer|min:1',
             'phone' => 'nullable|digits_between:10,15',
-            'hobbies' => 'nullable|array',
-            'role' => 'required|string'
+            'hobbies' => 'nullable|array'
         ]);
 
         $user->update([
@@ -80,8 +81,7 @@ public function home()
             'gender' => $validated['gender'],
             'age' => $validated['age'],
             'phone' => $validated['phone'],
-            'hobbies' => implode(',', $validated['hobbies'] ?? []),
-            'role' => $validated['role']
+            'hobbies' => implode(',', $validated['hobbies'] ?? [])
         ]);
 
        return redirect()->route('home')->with('success', 'User registered successfully!');
