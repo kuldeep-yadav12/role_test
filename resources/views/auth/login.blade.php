@@ -9,7 +9,7 @@
   @csrf
 <div class="mb-2">
         <label class="form-label">Username</label>
-        <input type="text"  class="form-control @error('username') is-invalid @enderror" name="username">
+        <input type="text"  class="form-control @error('username') is-invalid @enderror" name="name">
         <span class="text-danger">
           @error('username')
             {{ $message }}
@@ -19,7 +19,7 @@
 
       <div class="mb-2">
         <label class="form-label">Email</label>
-        <input type="email"  class="form-control @error('useremail') is-invalid @enderror" name="useremail">
+        <input type="email"  class="form-control @error('useremail') is-invalid @enderror" name="email">
         <span class="text-danger">
           @error('useremail')
             {{ $message }}
@@ -29,7 +29,7 @@
 
       <div class="mb-2">
         <label class="form-label">Password</label>
-        <input type="password"  class="form-control @error('userpass') is-invalid @enderror" name="userpass">
+        <input type="password"  class="form-control @error('userpass') is-invalid @enderror" name="password">
         <span class="text-danger">
           @error('userpass')
             {{ $message }}
