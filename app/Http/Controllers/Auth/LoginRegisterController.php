@@ -35,4 +35,10 @@ class LoginRegisterController extends Controller
     return redirect()->route('login')->with('status', 'Invalid credentials. Try again.');
 }
 
+public function logout()
+    {
+        Auth::logout(); 
+        return redirect('/login')->with('status', 'Logged out successfully.');
+    }
+
 }
