@@ -3,190 +3,60 @@
 @section("contant")
 <!-- partial -->
 
+<div class="container mt-5">
+    <h2>All Registered Users</h2>
 
-        <div class="row">
-            <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-9">
-                                <div class="d-flex align-items-center align-self-start">
-                                    <h3 class="mb-0">$12.34</h3>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="icon icon-box-success ">
-                                    <span class="mdi mdi-arrow-top-right icon-item"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <h6 class="text-muted font-weight-normal">All Posts</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-9">
-                                <div class="d-flex align-items-center align-self-start">
-                                    <h3 class="mb-0">$17.34</h3>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="icon icon-box-success">
-                                    <span class="mdi mdi-arrow-top-right icon-item"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <h6 class="text-muted font-weight-normal">All Users</h6>
-                    </div>
-                </div>
-            </div>
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-        </div>
+    <table class="table table-bordered table-striped mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>#ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Phone</th>
+                <th>Hobbies</th>
+                <th>Role</th>
+                <th width="180px">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($users as $user)
+                <tr>
+                    <td>{{ $user->id }}</td>
+                    <td>{{ $user->name }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td>{{ $user->gender }}</td>
+                    <td>{{ $user->age }}</td>
+                    <td>{{ $user->phone }}</td>
+                    <td>{{ $user->hobbies }}</td>
+                    <td>{{ $user->role }}</td>
+                    <td>
+                        <a href="{{ route('user.edit', $user->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        
+                        <form action="{{ route('user.destroy', $user->id) }}" method="POST" class="d-inline"
+                              onsubmit="return confirm('Are you sure you want to delete this user?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="9" class="text-center">No users found.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
 
-        <div class="row ">
-            <div class="col-12 grid-margin">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Order Status</h4>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <div class="form-check form-check-muted m-0">
-                                                <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input">
-                                                </label>
-                                            </div>
-                                        </th>
-                                        <th> Client Name </th>
-                                        <th> Order No </th>
-                                        <th> Product Cost </th>
-                                        <th> Project </th>
-                                        <th> Payment Mode </th>
-                                        <th> Start Date </th>
-                                        <th> Payment Status </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check form-check-muted m-0">
-                                                <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input">
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img src="/images/faces/face1.jpg" alt="image" />
-                                            <span class="pl-2">Henry Klein</span>
-                                        </td>
-                                        <td> 02312 </td>
-                                        <td> $14,500 </td>
-                                        <td> Dashboard </td>
-                                        <td> Credit card </td>
-                                        <td> 04 Dec 2019 </td>
-                                        <td>
-                                            <div class="badge badge-outline-success">Approved</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check form-check-muted m-0">
-                                                <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input">
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img src="/images/faces/face2.jpg" alt="image" />
-                                            <span class="pl-2">Estella Bryan</span>
-                                        </td>
-                                        <td> 02312 </td>
-                                        <td> $14,500 </td>
-                                        <td> Website </td>
-                                        <td> Cash on delivered </td>
-                                        <td> 04 Dec 2019 </td>
-                                        <td>
-                                            <div class="badge badge-outline-warning">Pending</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check form-check-muted m-0">
-                                                <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input">
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img src="/images/faces/face5.jpg" alt="image" />
-                                            <span class="pl-2">Lucy Abbott</span>
-                                        </td>
-                                        <td> 02312 </td>
-                                        <td> $14,500 </td>
-                                        <td> App design </td>
-                                        <td> Credit card </td>
-                                        <td> 04 Dec 2019 </td>
-                                        <td>
-                                            <div class="badge badge-outline-danger">Rejected</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check form-check-muted m-0">
-                                                <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input">
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img src="/images/faces/face3.jpg" alt="image" />
-                                            <span class="pl-2">Peter Gill</span>
-                                        </td>
-                                        <td> 02312 </td>
-                                        <td> $14,500 </td>
-                                        <td> Development </td>
-                                        <td> Online Payment </td>
-                                        <td> 04 Dec 2019 </td>
-                                        <td>
-                                            <div class="badge badge-outline-success">Approved</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check form-check-muted m-0">
-                                                <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input">
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img src="/images/faces/face4.jpg" alt="image" />
-                                            <span class="pl-2">Sallie Reyes</span>
-                                        </td>
-                                        <td> 02312 </td>
-                                        <td> $14,500 </td>
-                                        <td> Website </td>
-                                        <td> Credit card </td>
-                                        <td> 04 Dec 2019 </td>
-                                        <td>
-                                            <div class="badge badge-outline-success">Approved</div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
+        
 
 
 @endsection
