@@ -24,7 +24,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'gender' => 'required|in:Male,Female',
             'age' => 'required|integer|min:1',
-            'phone' => 'nullable|digits_between:10,15',
+            'phone' => 'nullable|digits_between:10,15|unique:users',
             'hobbies' => 'nullable|array',
             'password' => 'required|min:6|confirmed',
         ]);
@@ -77,7 +77,7 @@ public function listAll()
             'email' => 'required|email|unique:users,email,' . $id,
             'gender' => 'required|in:Male,Female',
             'age' => 'required|integer|min:1',
-            'phone' => 'nullable|digits_between:10,15',
+            'phone' => 'required|digits_between:10,15|unique:users,phone,' . $id,
             'hobbies' => 'nullable|array'
         ]);
 

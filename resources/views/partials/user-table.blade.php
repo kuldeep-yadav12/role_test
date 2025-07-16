@@ -31,7 +31,6 @@
                 @if(isset($showActions) && $showActions)
                 <td>
                     <a href="{{ route('user.edit', $user->id) }}" class="btn btn-warning btn-sm">Edit</a>
-
                     <form action="{{ route('user.destroy', $user->id) }}" method="POST" class="d-inline"
                           onsubmit="return confirm('Are you sure you want to delete this user?');">
                         @csrf
