@@ -84,21 +84,12 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $validated = $request->validate([
-<<<<<<< HEAD
             'name'    => 'required|string|max:255',
             'email'   => 'required|email|unique:users,email,' . $id,
             'gender'  => 'required|in:Male,Female',
             'age'     => 'required|integer|min:1',
             'phone'   => 'required|digits_between:10,15|unique:users,phone,' . $id,
             'hobbies' => 'nullable|array',
-=======
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'gender' => 'required|in:Male,Female',
-            'age' => 'required|integer|min:1',
-            'phone' => 'required|digits_between:10,15',
-            'hobbies' => 'nullable|array'
->>>>>>> 55d11277d0aa19164f81f3ae7bcc1f5b77a142c6
         ]);
 
         $user->update([
@@ -110,11 +101,8 @@ class UserController extends Controller
             'hobbies' => implode(',', $validated['hobbies'] ?? [])
         ]);
 
-<<<<<<< HEAD
+
         return redirect()->route('home')->with('success', 'User registered successfully!');
-=======
-       return redirect()->route('home')->with('success', 'User Updated successfully!');
->>>>>>> 55d11277d0aa19164f81f3ae7bcc1f5b77a142c6
 
     }
 
@@ -138,8 +126,7 @@ class UserController extends Controller
 
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
+ ]);
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('profile_image', 'public');
 
