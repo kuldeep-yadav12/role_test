@@ -34,7 +34,6 @@
             <td>
                 <a href="{{ route('user.edit', $user->id) }}" class="btn btn-warning btn-sm">Edit</a>
 
-<<<<<<< HEAD
                 @if(isset($showActions) && $showActions)
                 <td>
                     <a href="{{ route('user.edit', $user->id) }}" class="btn btn-warning btn-sm">Edit</a>
@@ -47,7 +46,6 @@
                 </td>
                 @endif
             </tr>
-=======
                 <form action="{{ route('user.destroy', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this user?');">
                     @csrf
                     @method('DELETE')
@@ -56,7 +54,6 @@
             </td>
             @endif
         </tr>
->>>>>>> e605c9416fbca3ca6627db6bd50a93c41393ed30
         @empty
         <tr>
             <td colspan="{{ isset($showActions) && $showActions ? 9 : 8 }}" class="text-center">No users found.</td>

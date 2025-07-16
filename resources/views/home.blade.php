@@ -24,10 +24,8 @@
             </div>
         </div>
     @endif
-<<<<<<< HEAD
     
     @include('partials.user-table', ['users' => $users, 'showActions' => true])
-=======
 
     <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
         <div class="card">
@@ -50,7 +48,6 @@
             </div>
         </div>
     </div>
->>>>>>> e605c9416fbca3ca6627db6bd50a93c41393ed30
 </div>
 
 @if(Auth::user()->role === 'admin')
