@@ -13,7 +13,7 @@ class BlogController extends Controller
             $blogs     = Blog::latest()->simplePaginate(3);
             $postCount = Blog::count();
         } else {
-            $blogs     = Blog::where('user_id', auth()->id())->latest()->simplePaginate(2);
+            $blogs     = Blog::where('user_id', auth()->id())->latest()->simplePaginate(3);
             $postCount = Blog::where('user_id', auth()->id())->count();
         }
 
