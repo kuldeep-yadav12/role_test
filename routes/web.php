@@ -13,10 +13,10 @@ Route::get('/', function () {
     // }
 
     if (!Auth::check()) {
-        return view('auth.login'); 
+        return view('auth.login');
     }
 
-    return app(UserController::class)->home(); 
+    return app(UserController::class)->home();
 })->name('home');
 
 Route::get('/register', [UserController::class, 'index']);
@@ -32,6 +32,7 @@ Route::prefix('blogs')->name('blog.')->group(function () {
     Route::resource('main_blog', BlogController::class);
 });
 
+Route::resource('blogs/main_blog', BlogController::class)->names('blog.main_blog');
 
 
 Route::get('/login', [LoginRegisterController::class, 'showLogin'])->name('login');

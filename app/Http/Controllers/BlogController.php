@@ -31,9 +31,9 @@ class BlogController extends Controller
 
 public function index(Request $request)
 {
-    if (auth()->user()->role === 'admin') {
-        $blogs = Blog::latest()->simplePaginate(2);
-    } else {
+    if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
+    abort(403); // Forbidden
+}else {
         $blogs = Blog::where('user_id', auth()->id())->latest()->simplePaginate(2);
     }
 
@@ -80,10 +80,16 @@ public function index(Request $request)
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Blog $blog)
     {
-        //
+        // Allow only admin or the owner of the blog to view it
+        if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
+            abort(403); // Access denied
+        }
+
+        return view('blogs.main_blogs.show', compact('blog'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
