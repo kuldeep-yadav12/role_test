@@ -101,7 +101,6 @@ class UserController extends Controller
             'hobbies' => implode(',', $validated['hobbies'] ?? [])
         ]);
 
-
         return redirect()->route('home')->with('success', 'User registered successfully!');
 
     }
@@ -121,12 +120,11 @@ class UserController extends Controller
 
     public function profile_update(Request $request, $id = '')
     {
-
         $user = User::findOrFail($id);
 
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
- ]);
+        ]);
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('profile_image', 'public');
 
