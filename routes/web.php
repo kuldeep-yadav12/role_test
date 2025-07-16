@@ -32,7 +32,7 @@ Route::prefix('blogs')->name('blog.')->group(function () {
     Route::resource('main_blog', BlogController::class);
 });
 
-Route::resource('blogs/main_blog', BlogController::class)->names('blog.main_blog');
+// Route::resource('blogs/main_blog', BlogController::class)->names('blog.main_blog');
 
 
 Route::get('/login', [LoginRegisterController::class, 'showLogin'])->name('login');

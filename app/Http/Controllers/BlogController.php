@@ -27,24 +27,20 @@ class BlogController extends Controller
 //     return view('blogs.main_blogs.index', compact('blogs'));
 // }
 
+    public function index(Request $request)
+    {
+        if (auth()->user()->role === 'admin') {
+            $blogs = Blog::latest()->simplePaginate(2);
+        } else {
+            $blogs = Blog::where('user_id', auth()->id())->latest()->simplePaginate(2);
+        }
 
+        if ($request->ajax()) {
+            return view('blogs.main_blogs.blogs', compact('blogs'))->render();
+        }
 
-public function index(Request $request)
-{
-    if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
-    abort(403); // Forbidden
-}else {
-        $blogs = Blog::where('user_id', auth()->id())->latest()->simplePaginate(2);
+        return view('blogs.main_blogs.index', compact('blogs'));
     }
-
-    if ($request->ajax()) {
-        return view('blogs.main_blogs.blogs', compact('blogs'))->render();
-    }
-
-    return view('blogs.main_blogs.index', compact('blogs'));
-}
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -59,6 +55,7 @@ public function index(Request $request)
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'title'   => 'required',
             'content' => 'required',
@@ -72,6 +69,8 @@ public function index(Request $request)
             $data['image'] = $imagePath;
         }
 
+        $data['user_id'] = auth()->id(); // ✅ Assign current user's ID
+
         Blog::create($data);
 
         return redirect()->route('blog.main_blog.index')->with('success', 'Blog created!');
@@ -82,14 +81,13 @@ public function index(Request $request)
      */
     public function show(Blog $blog)
     {
-        // Allow only admin or the owner of the blog to view it
+        // Only show if it's the user's own blog or the user is admin
         if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
-            abort(403); // Access denied
+            abort(403); // Forbidden
         }
 
         return view('blogs.main_blogs.show', compact('blog'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
