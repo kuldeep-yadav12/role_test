@@ -31,6 +31,7 @@
             <label for="image" class="form-label">Upload Image</label>
             <input type="file" name="image" class="form-control">
         </div>
+        
 
         <button type="submit" class="btn btn-primary">Add Blog</button>
     </form>

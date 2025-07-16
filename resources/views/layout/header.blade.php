@@ -7,7 +7,7 @@
              <ul class="navbar-nav w-100">
                  <li class="nav-item w-100">
                      <h3 class="wel_head">
-                         WELCOME {{ (Auth::user()->role ?? '') . ' ' . (Auth::user()->name ?? '') }}
+                         WELCOME @if(Auth::user()->role === 'system_user') User @else Admin @endif <strong>{{(Auth::user()->name ?? '') }}</strong>
                      </h3>
                  </li>
              </ul>

@@ -10,7 +10,7 @@ class BlogController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->role === 'admin') {
-            $blogs     = Blog::latest()->simplePaginate(2);
+            $blogs     = Blog::latest()->simplePaginate(3);
             $postCount = Blog::count();
         } else {
             $blogs     = Blog::where('user_id', auth()->id())->latest()->simplePaginate(2);
@@ -74,23 +74,56 @@ class BlogController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
-    {
-        //
+{
+    $blog = Blog::findOrFail($id);
+
+    if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
+        abort(403);
     }
+
+    return view('blogs.main_blogs.edit', compact('blog'));
+}
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        //
+{
+    $blog = Blog::findOrFail($id);
+
+    // Prevent unauthorized users from editing
+    if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
+        abort(403);
     }
+
+    $request->validate([
+        'title'   => 'required',
+        'content' => 'required',
+        'image'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
+
+    $data = $request->only(['title', 'content']);
+
+    // Handle image upload
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('blogs', 'public');
+        $data['image'] = $imagePath;
+    }
+
+    $blog->update($data);
+
+    return redirect()->route('blog.main_blog.index')->with('success', 'Blog updated successfully!');
+}
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        $blog = Blog::findOrFail($id);
+        $blog->delete();
+        return redirect()->route('blog.main_blog.index')->with('success', 'Blog deleted successfully!');
     }
 }
