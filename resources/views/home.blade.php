@@ -24,6 +24,8 @@
             </div>
         </div>
     @endif
+    
+    @include('partials.user-table', ['users' => $users, 'showActions' => true])
 
     <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
         <div class="card">
@@ -56,7 +58,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        @include('partials.user-table', ['users' => $users, 'showActions' => true])
+        @include('partials.user-table', ['users' => $users])
     </div>
 @endif
 

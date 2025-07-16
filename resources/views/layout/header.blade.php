@@ -46,11 +46,14 @@
                      </form>
 
                  </li>
+                 @endauth
+
+                 @guest
                  <li class="nav-item">
                      <a class="nav-link {{ request()->is('register') ? 'active' : '' }}" href="{{ route('user.store') }}">Register</a>
 
                  </li>
-                 @else
+                
                  {{-- <li class="nav-item dropdown">
                          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                              aria-expanded="false">
@@ -58,7 +61,7 @@
                  </a>
 
                  </li> --}}
-                 @endauth
+                 @endguest
              </ul>
              {{-- <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
                  data-toggle="offcanvas">

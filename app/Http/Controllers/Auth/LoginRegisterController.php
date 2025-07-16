@@ -12,7 +12,12 @@ class LoginRegisterController extends Controller
 {
     public function showLogin()
     {
-        return view('auth.login');
+        if (Auth::check()) {
+        return redirect('/')->with('status', 'You are already logged in.');
+    }
+
+    return view('auth.login');
+
     }
 
    public function login(Request $request)
