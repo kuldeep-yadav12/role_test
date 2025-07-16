@@ -36,4 +36,4 @@ Route::prefix('blogs')->name('blog.')->group(function () {
 
 Route::get('/login', [LoginRegisterController::class, 'showLogin'])->name('login');
 Route::post('/loginUser', [LoginRegisterController::class, 'login'])->name('login.submit');
-Route::get('/logout', [LoginRegisterController::class, 'logout'])->name('logout');
+Route::post('/logout', [LoginRegisterController::class, 'logout'])->name('logout');
