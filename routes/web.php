@@ -28,3 +28,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::put('/profile/update/{id}', [UserController::class, 'profile_update'])->name('profile.update');
 });
+
+Route::post('/comments', [App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
