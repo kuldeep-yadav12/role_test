@@ -58,7 +58,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        @include('partials.user-table', ['users' => $users, 'showActions' => true])
+        @include('partials.user-table', ['users' => $users])
     </div>
 @endif
 
