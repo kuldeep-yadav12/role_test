@@ -7,11 +7,12 @@
         <a href="{{ route('blog.main_blog.create') }}" class="btn btn-success">+ Add Blog</a>
     </div>
 
-    {{-- Blog content will be replaced by AJAX --}}
     <div id="blog-data">
         @include('blogs.main_blogs.blogs')
     </div>
 </div>
+
+
 @endsection
 
 @section('scripts')
@@ -30,7 +31,7 @@
                 dataType: 'html',
                 success: function (data) {
                     $('#blog-data').html(data);
-                    window.history.pushState(null, '', url); // optional: update URL without reload
+                    window.history.pushState(null, '', url);
                 },
                 error: function () {
                     alert('Could not load the page.');

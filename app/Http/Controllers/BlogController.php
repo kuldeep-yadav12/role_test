@@ -6,40 +6,22 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    // public function index()
-    // {
-    //     $blogs = Blog::latest()->simplepaginate(2);
-    //     return view('blogs.main_blogs.index', compact('blogs'));
-
-    // }
-
-//  public function index(Request $request)
-// {
-//     $blogs = Blog::latest()->simplePaginate(2);
-
-//     if ($request->ajax()) {
-//         return view('blogs.main_blogs.blogs', compact('blogs'))->render();
-//     }
-
-//     return view('blogs.main_blogs.index', compact('blogs'));
-// }
 
     public function index(Request $request)
     {
         if (auth()->user()->role === 'admin') {
-            $blogs = Blog::latest()->simplePaginate(2);
+            $blogs     = Blog::latest()->simplePaginate(2);
+            $postCount = Blog::count();
         } else {
-            $blogs = Blog::where('user_id', auth()->id())->latest()->simplePaginate(2);
+            $blogs     = Blog::where('user_id', auth()->id())->latest()->simplePaginate(2);
+            $postCount = Blog::where('user_id', auth()->id())->count();
         }
 
         if ($request->ajax()) {
-            return view('blogs.main_blogs.blogs', compact('blogs'))->render();
+            return view('blogs.main_blogs.blogs', compact('blogs', 'postCount'))->render();
         }
 
-        return view('blogs.main_blogs.index', compact('blogs'));
+        return view('blogs.main_blogs.index', compact('blogs', 'postCount'));
     }
 
     /**
@@ -69,7 +51,7 @@ class BlogController extends Controller
             $data['image'] = $imagePath;
         }
 
-        $data['user_id'] = auth()->id(); // ✅ Assign current user's ID
+        $data['user_id'] = auth()->id();
 
         Blog::create($data);
 
@@ -81,9 +63,8 @@ class BlogController extends Controller
      */
     public function show(Blog $blog)
     {
-        // Only show if it's the user's own blog or the user is admin
         if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
-            abort(403); // Forbidden
+            abort(403);
         }
 
         return view('blogs.main_blogs.show', compact('blog'));
