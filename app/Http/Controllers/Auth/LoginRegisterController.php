@@ -14,7 +14,7 @@ class LoginRegisterController extends Controller
     {
         return view('auth.login');
     }
-        
+
    public function login(Request $request)
 {
     $users = $request->validate([
@@ -22,7 +22,7 @@ class LoginRegisterController extends Controller
         'password' => 'required',
     ]);
 
-   
+
     $user = User::where('email', $users['email'])->first();
 
     if (!$user) {
@@ -30,7 +30,7 @@ class LoginRegisterController extends Controller
     }
 
     if (Hash::check($users['password'], $user->password)) {
-        Auth::login($user); 
+        Auth::login($user);
         return redirect('/')->with('status', 'Logged in successfully');
     }
 
@@ -39,7 +39,7 @@ class LoginRegisterController extends Controller
 
 public function logout()
     {
-        Auth::logout(); 
+        Auth::logout();
         return redirect('/login')->with('status', 'Logged out successfully.');
     }
 
