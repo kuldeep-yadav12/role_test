@@ -82,6 +82,7 @@ public function listAll()
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
