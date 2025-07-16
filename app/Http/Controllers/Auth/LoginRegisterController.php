@@ -20,15 +20,19 @@ class LoginRegisterController extends Controller
 
     }
 
-   public function login(Request $request)
+    
+public function login(Request $request)
 {
+
     $users = $request->validate([
-        'email'    => 'required|email',
-        'password' => 'required',
+        'login'    => 'required|string',
+        'password' => 'required|string',
     ]);
 
+  
+    $fieldType = filter_var($users['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
 
-    $user = User::where('email', $users['email'])->first();
+    $user = User::where($fieldType, $users['login'])->first();
 
     if (!$user) {
         return redirect('/register')->with('status', 'You are not registered. Please register first.');
@@ -41,6 +45,7 @@ class LoginRegisterController extends Controller
 
     return redirect()->route('login')->with('status', 'Invalid credentials. Try again.');
 }
+
 
 public function logout()
     {

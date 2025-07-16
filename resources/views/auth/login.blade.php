@@ -14,12 +14,16 @@
             <div class="div">
     <div class="row">
         <div class="col">
-            @if (session('status'))
-           <div class="div alert alert-success">
-                    {{ session('status') }}
-                </div>
-                
-            @endif
+          @if (session('status'))
+    @php
+        $statusMessage = session('status');
+        $alertType = Str::contains($statusMessage, ['Invalid', 'Logged out', 'not registered']) ? 'danger' : 'success';
+    @endphp
+    <div class="alert alert-{{ $alertType }}">
+        {{ $statusMessage }}
+    </div>
+@endif
+
         </div>
     </div>
  </div>
@@ -27,7 +31,7 @@
             <div class="col-9">
             <form action="{{ route('login.submit') }}" method="POST">
                 @csrf
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label class="form-label">Email</label>
                     <input type="email" name="email" class="form-control @error('email') is-invalid @enderror">
                     <span class="text-danger">
@@ -35,7 +39,16 @@
                             {{ $message }}
                         @enderror
                     </span>
-                </div>
+                </div> --}}
+                <div class="mb-3">
+                            <label class="form-label">Email or Username</label>
+                            <input type="text" name="login" class="form-control @error('login') is-invalid @enderror" value="{{ old('login') }}">
+                            <span class="text-danger">
+                                @error('login')
+                                    {{ $message }}
+                                @enderror
+                            </span>
+                        </div>
 
                 <div class="mb-3">
                     <label class="form-label">Password</label>
