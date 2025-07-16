@@ -88,7 +88,7 @@ public function listAll()
             'email' => 'required|email|unique:users,email,' . $id,
             'gender' => 'required|in:Male,Female',
             'age' => 'required|integer|min:1',
-            'phone' => 'required|digits_between:10,15|unique:users,phone,' . $id,
+            'phone' => 'required|digits_between:10,15',
             'hobbies' => 'nullable|array'
         ]);
 
@@ -101,7 +101,7 @@ public function listAll()
             'hobbies' => implode(',', $validated['hobbies'] ?? [])
         ]);
 
-       return redirect()->route('home')->with('success', 'User registered successfully!');
+       return redirect()->route('home')->with('success', 'User Updated successfully!');
 
     }
 
