@@ -78,6 +78,11 @@
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+ <div class="text-center mt-4">
+      <p>Already Registered ? 
+        <a href="{{ route('login')  }}" class="text-decoration-none">Login here</a>
+          </p>
+         </div>
 </div>
 </body>
 </html>

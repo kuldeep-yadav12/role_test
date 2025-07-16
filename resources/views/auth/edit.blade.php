@@ -48,7 +48,7 @@
 
         <div class="mb-3">
             <label class="form-label">Phone</label>
-            <input type="text" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}">
+            <input type="number" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}">
         </div>
 
         <div class="mb-3">
