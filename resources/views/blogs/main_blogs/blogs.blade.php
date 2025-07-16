@@ -12,6 +12,7 @@
                 <h5 class="card-title">{{ $blog->title }}</h5>
                 <p class="card-text">{{ Str::limit($blog->content, 150) }}</p>
             </div>
+            <a href="/comment/{{ $blog->id }}"><button>Comment</button></a>
             <div class="card-body d-flex justify-content-between">
                 <a href="{{ route('blog.main_blog.edit', $blog->id) }}" class="btn btn-primary">Update</a>
 

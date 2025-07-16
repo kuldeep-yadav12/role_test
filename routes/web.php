@@ -31,3 +31,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/all-users', [UserController::class, 'listAll'])->name('user.list');
 
 });
+
+Route::post('/comments', [App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
