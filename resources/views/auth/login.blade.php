@@ -8,9 +8,9 @@
 </head>
 <body>
    <div class="container">
-    <div class="row d-flex justify-content-center">
-        <div class="col-4 p-5 bg-info-subtle mt-5 rounded-4">
-            <h2 class="mb-4">Login Users</h2>
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-4 p-3 bg-info-subtle mt-5 rounded-4">
+            <h2 class="mb-4 text-center">Login Users</h2>
             <div class="div">
     <div class="row">
         <div class="col">
@@ -23,7 +23,7 @@
         </div>
     </div>
  </div>
-           <div class="row">
+           <div class="row  d-flex justify-content-center align-items-center">
             <div class="col-9">
             <form action="{{ route('login.submit') }}" method="POST">
                 @csrf
@@ -49,6 +49,11 @@
 
                 <button type="submit" class="btn btn-primary w-100">LOGIN</button>
             </form>
+             <div class="text-center mt-4">
+                        <p>Don't have an account? 
+                            <a href="{{ url('/register')  }}" class="text-decoration-none">Register here</a>
+                        </p>
+                    </div>
 
     </div>
    </div>
