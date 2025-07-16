@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,14 +12,12 @@ class LoginRegisterController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-        return redirect('/')->with('status', 'You are already logged in.');
+            return redirect('/')->with('status', 'You are already logged in.');
+        }
+        return view('auth.login');
     }
 
-    return view('auth.login');
 
-    }
-
-    
 public function login(Request $request)
 {
 
@@ -47,7 +44,7 @@ public function login(Request $request)
 }
 
 
-public function logout()
+    public function logout()
     {
         Auth::logout();
         return redirect('/login')->with('status', 'Logged out successfully.');

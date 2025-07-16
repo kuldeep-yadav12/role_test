@@ -5,7 +5,7 @@
     <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px;">
         <div class="text-center">
             <!-- Profile Image -->
-            <img src="{{ $user->image ? asset('storage/' . $user->image) : asset('images/faces/default.jpg') }}" class="rounded-circle mb-3 border border-3 border-primary" width="120" height="120" style="object-fit: cover;">
+            <img src="{{ $user->image ? asset('storage/' . $user->image) : asset('images/faces/default.jpg') }}" class="rounded-circle mb-3  border-primary" width="120" height="120" style="object-fit: cover;">
 
             <!-- Image Upload Form -->
             <form action="{{ route('profile.update', $user->id) }}" method="POST" enctype="multipart/form-data" class="mt-3">
