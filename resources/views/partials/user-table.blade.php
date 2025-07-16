@@ -15,9 +15,11 @@
         </tr>
     </thead>
     <tbody>
+        @php $id = 1 @endphp
         @forelse ($users as $user)
+
             <tr>
-                <td>{{ $user->id }}</td>
+                <td>{{ $id++ }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->gender }}</td>
