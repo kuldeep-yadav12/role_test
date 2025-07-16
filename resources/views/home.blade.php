@@ -24,7 +24,7 @@
             </div>
         </div>
     @endif
-    
+
     @include('partials.user-table', ['users' => $users, 'showActions' => true])
 
     <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
