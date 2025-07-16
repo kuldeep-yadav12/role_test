@@ -17,7 +17,7 @@
                  <li class="nav-item dropdown">
                      <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
                          <div class="navbar-profile">
-                             <img class="img-xs rounded-circle" src="{{ isset(Auth::user()->image) ? asset('storage/profile_image/' . Auth::user()->image) : asset('images/faces/face2.jpg') }}" alt="image">
+                             <img class="img-xs rounded-circle" src="{{ isset(Auth::user()->image) ? asset('storage/' . Auth::user()->image) : asset('images/faces/face2.jpg') }}" alt="image">
                              <p class="mb-0 d-none d-sm-block navbar-profile-name">{{ Auth::user()->name ?? ''}}</p>
                              <i class="mdi mdi-menu-down d-none d-sm-block"></i>
                          </div>
@@ -53,7 +53,7 @@
                      <a class="nav-link {{ request()->is('register') ? 'active' : '' }}" href="{{ route('user.store') }}">Register</a>
 
                  </li>
-                
+
                  {{-- <li class="nav-item dropdown">
                          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                              aria-expanded="false">

@@ -30972,3 +30972,7 @@ input:checked+.slider:before {
     -webkit-transition: .4s;
     transition: .4s;
 }
+
+.list-group-item{
+    color: rebeccapurple;
+}
