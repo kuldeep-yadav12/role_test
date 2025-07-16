@@ -30,7 +30,7 @@
                          <a class="dropdown-item" href=""
                              onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();">Logout</a>
-                         <form id="logout-form" action="" method="POST">
+                         <form id="logout-form" action="{{ route('logout') }}" method="POST">
                              @csrf
                          </form>
                      </div>
@@ -42,8 +42,12 @@
              <ul class="navbar-nav ms-auto">
                  @auth
                      <li class="nav-item">
-                         <a class="nav-link {{ request()->is('login') ? 'active' : '' }}"
-                             href="{{ route ("logout") }}">Logout</a>
+                         <a class="nav-link" href="#" onclick="event.preventDefault(); 
+                         document.getElementById('logout-form-inline').submit();">Logout</a>
+                         <form id="logout-form-inline" action="{{ route('logout') }}" method="POST" class="d-none">
+                              @csrf
+                                </form>
+
                      </li>
                      <li class="nav-item">
                        <a class="nav-link {{ request()->is('register') ? 'active' : '' }}" href="{{ route('user.store') }}">Register</a>
