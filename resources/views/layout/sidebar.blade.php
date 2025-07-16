@@ -24,14 +24,15 @@
             <span class="nav-link">Navigation</span>
         </li>
 
-        <li class="nav-item menu-items">
-            <a class="nav-link" href="/">
-                <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
-                </span>
-                <span class="menu-title">Dashboard</span>
-            </a>
-        </li>
+        @if (Auth::user()->role === 'admin')
+    <li class="nav-item menu-items">
+        <a class="nav-link" href="/">
+            <span class="menu-icon"><i class="mdi mdi-speedometer"></i></span>
+            <span class="menu-title">Dashboard</span>
+        </a>
+    </li>
+@endif
+
 
         @if(Auth::user()->role === 'admin')
             <li class="nav-item menu-items">

@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Blog;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
+
     // Show registration form
     public function index()
     {
@@ -44,14 +47,22 @@ class UserController extends Controller
 
     }
 
-    // Show user profile
+
 public function home()
 {
-    $users = User::all(); ;
-    $userCount = User::count();
+    if (auth()->user()->role === 'admin') {
+        $users = User::all();
+        $userCount = User::count();
+        $postCount = \App\Models\Blog::count();
+    } else {
+        $users = null;
+        $userCount = null;
+        $postCount = \App\Models\Blog::where('user_id', auth()->id())->count();
+    }
 
-    return view('home', compact('users','userCount'));
+    return view('home', compact('users', 'userCount', 'postCount'));
 }
+
 
 public function listAll()
 {
@@ -99,7 +110,7 @@ public function listAll()
     {
         $user = User::findOrFail($id);
         $user->delete();
-        
+
         if (User::count() === 0) {
         DB::statement('ALTER TABLE users AUTO_INCREMENT = 1');
     }

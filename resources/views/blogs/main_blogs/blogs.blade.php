@@ -1,3 +1,4 @@
+
 @if($blogs->isEmpty())
     <div class="alert alert-info">No blogs available yet.</div>
 @else
