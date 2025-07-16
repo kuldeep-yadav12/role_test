@@ -22,12 +22,13 @@ Route::get('/', function () {
 Route::get('/register', [UserController::class, 'index']);
 Route::post('/register', [UserController::class, 'store'])->name('user.store');
 
+Route::middleware(['auth'])->group(function () {
 // Route::get('/', [UserController::class, 'home'])->name('home');
 Route::get('/all-users', [UserController::class, 'listAll'])->name('user.list');
 Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
 Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
 Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
-
+});
 Route::prefix('blogs')->name('blog.')->group(function () {
     Route::resource('main_blog', BlogController::class);
 });
