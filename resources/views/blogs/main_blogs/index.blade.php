@@ -6,16 +6,13 @@
         <h2>All Blogs</h2>
         <a href="{{ route('blog.main_blog.create') }}" class="btn btn-success">+ Add Blog</a>
     </div>
+    @include('partials.blog_filter')
 
     <div id="blog-data">
         @include('blogs.main_blogs.blogs')
     </div>
 </div>
 
-
-@endsection
-
-@section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
@@ -38,6 +35,36 @@
                 }
             });
         });
+
+
+        // FILTER FORM AJAX
+        $('#blog-filter-form').on('submit', function(e) {
+            e.preventDefault();
+            let formData = $(this).serialize();
+
+            $.ajax({
+                url: "{{ route('blog.main_blog.index') }}",
+                method: 'GET',
+                data: formData,
+                success: function(response) {
+                    $('#blog-data').html(response);
+                }
+            });
+        });
+
+        // RESET FILTER
+        $('#reset-button').on('click', function () {
+            $('#blog-filter-form')[0].reset();
+
+            $.ajax({
+                url: "{{ route('blog.main_blog.index') }}",
+                method: 'GET',
+                success: function(response) {
+                    $('#blog-data').html(response);
+                }
+            });
+        });
+    
     });
 </script>
 @endsection

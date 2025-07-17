@@ -33,6 +33,9 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/all-users', [UserController::class, 'listAll'])->name('user.list');
 
+    Route::get('/main-blogs', [BlogController::class, 'blogFilter'])->name('blog.main_blog.index');
+
+
 });
 
 Route::post('/comments', [App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
