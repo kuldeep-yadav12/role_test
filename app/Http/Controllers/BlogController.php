@@ -140,7 +140,7 @@ public function blogFilter(Request $request)
     if ($request->filled('end_date')) {
         $query->whereDate('created_at', '<=', $request->end_date);
     }
-     $blogs = $query->latest()->paginate(5);
+     $blogs = $query->latest()->paginate(3);
 
     if ($request->ajax()) {
         return view('blogs.main_blogs.blogs', compact('blogs'))->render();
