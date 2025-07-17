@@ -24,8 +24,8 @@
     <div class="col">
         <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
     </div>
-    <div class="col">
-        <button type="submit" class="btn btn-primary">Filter</button>
+    <div class="col d-flex">
+        <button type="submit" class="btn btn-primary mr-3">Filter</button>
         <button type="button" id="reset-button" class="btn btn-secondary">Reset</button>
     </div>
 </form>
