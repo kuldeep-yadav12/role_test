@@ -66,6 +66,7 @@
                         </script>
 
                     </div>
+                    
                     <div class="card-body d-flex justify-content-between">
                         <a href="{{ route('blog.main_blog.edit', $blog->id) }}" class="btn btn-primary">Update</a>
 
