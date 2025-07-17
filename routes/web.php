@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginRegisterController;
-use App\Http\Controllers\Auth\UserController;
-use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\LoginRegisterController;
 
 Route::get('/register', [UserController::class, 'index']);
 Route::post('/register', [UserController::class, 'store'])->name('user.store');
@@ -28,6 +29,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::put('/profile/update/{id}', [UserController::class, 'profile_update'])->name('profile.update');
 
+    Route::post('/blogs/{blog}/like', [LikeController::class, 'LikeDislike'])->name('blogs.like');
+    
     Route::get('/all-users', [UserController::class, 'listAll'])->name('user.list');
 
 });
