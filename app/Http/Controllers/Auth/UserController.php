@@ -99,6 +99,12 @@ class UserController extends Controller
 
     $users = $query->get();
 
+     if ($request->ajax()) {
+    $html = view('partials.user-table', ['users' => $users, 'showActions' => true])->render();
+    return response()->json(['html' => $html]);
+}
+
+
     $userCount = User::count();
     $postCount = \App\Models\Blog::count();
     return view('home', compact('users','userCount', 'postCount'));

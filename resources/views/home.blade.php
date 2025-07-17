@@ -56,9 +56,64 @@
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    @include('partials.user-filter')
-    @include('partials.user-table', ['users' => $users, 'showActions' => true])
-</div>
+     @include('partials.user-filter', ['users' => $users,'showActions' => true])
+      <table class="table table-bordered table-striped mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>#ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Phone</th>
+                <th>Hobbies</th>
+                <th>Role</th>
+                <th width="180px">Actions</th>
+                
+            </tr>
+        </thead>
+        <tbody id="user-table">
+            @include('partials.user-table', ['users' => $users, 'showActions' => true])
+        </tbody>
+    </table>
+    </div>
 @endif
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    console.log("Filter JS loaded!");
+
+    $('#user-filter-form').on('submit', function(e){
+        e.preventDefault();
+
+        $.ajax({
+            url: "{{ route('user.list') }}",
+            method: "GET",
+            data: $(this).serialize(),
+            success: function(response){
+                $('#user-table').html(response.html);
+            },
+            error: function(err){
+                alert('Something went wrong');
+                console.log(err);
+            }
+        });
+
+        // Reset button
+    $('#reset-button').on('click', function () {
+        $('#user-filter-form')[0].reset();
+        $.ajax({
+            url: "{{ route('user.list') }}",
+            type: "GET",
+            success: function (response) {
+                $('#user-table').html(response.html);
+            }
+        });
+    });
+
+    });
+</script>
+
 @endsection
+
+
