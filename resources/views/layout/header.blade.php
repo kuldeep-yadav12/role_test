@@ -15,7 +15,7 @@
 
 
                  <li class="nav-item dropdown">
-                     <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
+                     <a class="nav-link" id="profileDropdown" href="{{ route('user.profile') }}" data-toggle="dropdown">
                          <div class="navbar-profile">
                              <img class="img-xs rounded-circle" src="{{ isset(Auth::user()->image) ? asset('storage/' . Auth::user()->image) : asset('images/faces/face2.jpg') }}" alt="image">
                              <p class="mb-0 d-none d-sm-block navbar-profile-name">{{ Auth::user()->name ?? ''}}</p>
