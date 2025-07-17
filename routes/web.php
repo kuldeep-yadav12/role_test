@@ -29,7 +29,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::put('/profile/update/{id}', [UserController::class, 'profile_update'])->name('profile.update');
 
-    Route::post('/blogs/{blog}/like', [LikeController::class, 'LikeDislike'])->name('blogs.like');
+    // Route::post('/blogs/{blog}/like', [LikeController::class, 'LikeDislike'])->name('blogs.like');
+    Route::post('/like-toggle', [LikeController::class, 'toggleLikeDislike'])->name('like.toggle');
+
     
     Route::get('/all-users', [UserController::class, 'listAll'])->name('user.list');
 
