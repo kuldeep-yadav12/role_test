@@ -99,7 +99,9 @@ class UserController extends Controller
 
     $users = $query->get();
 
-    return view('users', compact('users'));
+    $userCount = User::count();
+    $postCount = \App\Models\Blog::count();
+    return view('home', compact('users','userCount', 'postCount'));
 }
 
 

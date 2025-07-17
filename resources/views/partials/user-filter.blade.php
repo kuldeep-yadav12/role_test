@@ -1,4 +1,5 @@
-<form method="GET" action="{{ route('user.list') }}" class="row g-3 mb-4">
+<form method="POST" action="{{ route('user.list') }}" class="row g-3 mb-4" id="user-filter-form">
+    @csrf
     <div class="col">
         <input type="text" name="name" class="form-control" placeholder="Name" value="{{ request('name') }}">
     </div>
@@ -29,3 +30,4 @@
         <a href="{{ route('user.list') }}" class="btn btn-secondary">Reset</a>
     </div>
 </form>
+
