@@ -5,6 +5,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+
     protected $fillable = [
         'name',
         'email',
@@ -20,5 +21,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function likes()
+{
+    return $this->hasMany(Like::class);
+}
+
 
 }
