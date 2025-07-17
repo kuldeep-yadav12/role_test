@@ -22,6 +22,7 @@
                     @endphp
 
                     <div class="card-footer d-flex justify-content-between align-items-center">
+                        
                         <a class="btn btn-warning" href="/comment/{{ $blog->id }}"><i class="fa-solid fa-comment"></i></a>
 
                         <button class="btn btn-success like-btn" data-id="{{ $blog->id }}" data-type="like">
