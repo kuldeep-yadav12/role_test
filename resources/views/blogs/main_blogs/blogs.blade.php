@@ -13,6 +13,37 @@
                 <p class="card-text">{{ Str::limit($blog->content, 150) }}</p>
             </div>
             <a href="/comment/{{ $blog->id }}"><button>Comment</button></a>
+            
+            @php
+    $userLike = $blog->likes->where('user_id', auth()->id())->first();
+    $likesCount = $blog->likes->where('type', 'like')->count();
+    $dislikesCount = $blog->likes->where('type', 'dislike')->count();
+@endphp
+
+<div class="card-footer d-flex justify-content-center align-items-center">
+
+    {{-- Like Button --}}
+    <form action="{{ route('blogs.like', $blog->id) }}" method="POST" class="d-flex align-items-center gap-1">
+        @csrf
+        <input type="hidden" name="type" value="like">
+        <button type="submit" class="btn btn-sm {{ $userLike && $userLike->type === 'like' ? 'btn-success' : 'btn-outline-success' }}">
+          <i class="fa-solid fa-thumbs-up"></i>
+        </button>
+        <span>{{ $likesCount }}</span>
+    </form>
+
+    {{-- Dislike Button --}}
+    <form action="{{ route('blogs.like', $blog->id) }}" method="POST" class="d-flex align-items-center gap-1">
+        @csrf
+        <input type="hidden" name="type" value="dislike">
+        <button type="submit" class="btn btn-sm {{ $userLike && $userLike->type === 'dislike' ? 'btn-danger' : 'btn-outline-danger' }} ml-3">
+           <i class="fa-solid fa-thumbs-down"></i>
+        </button>
+        <span>{{ $dislikesCount }}</span>
+    </form>
+
+</div>
+
             <div class="card-body d-flex justify-content-between">
                 <a href="{{ route('blog.main_blog.edit', $blog->id) }}" class="btn btn-primary">Update</a>
 
