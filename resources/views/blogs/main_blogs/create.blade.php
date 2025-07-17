@@ -1,7 +1,7 @@
 @extends("layout.app")
 
 @section("contant")
-<div class="container mt-5">
+<div class="mt-5">
     <h2 class="mb-4">Add New Blog</h2>
 
     @if ($errors->any())

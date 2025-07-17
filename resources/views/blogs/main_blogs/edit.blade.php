@@ -1,7 +1,7 @@
 @extends("layout.app")
 
 @section("contant")
-<div class="container mt-5">
+<div class="mt-5">
     <div class="card shadow-lg">
         <div class="card-header bg-primary text-white">
             <h4>Edit Blog</h4>

@@ -13,7 +13,6 @@
                         <h5 class="card-title">{{ $blog->title }}</h5>
                         <p class="card-text">{{ Str::limit($blog->content, 150) }}</p>
                     </div>
-                    <a href="/comment/{{ $blog->id }}"><button>Comment</button></a>
 
 
                     @php
@@ -22,18 +21,28 @@
                         $dislikesCount = $blog->likes->where('type', 'dislike')->count();
                     @endphp
 
-                    <div class="card-footer d-flex justify-content-center align-items-center">
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <a class="btn btn-warning" href="/comment/{{ $blog->id }}"><i class="fa-solid fa-comment"></i></a>
 
                         <button class="btn btn-success like-btn" data-id="{{ $blog->id }}" data-type="like">
                             <i class="fa-solid fa-thumbs-up"></i> <span
                                 id="like-count-{{ $blog->id }}">{{ $blog->likes()->where('type', 'like')->count() }}</span>
                         </button>
 
-                        <button class="btn btn-danger dislike-btn ml-3" data-id="{{ $blog->id }}"
+                        <button class="btn btn-danger dislike-btn" data-id="{{ $blog->id }}"
                             data-type="dislike">
                             <i class="fa-solid fa-thumbs-down"></i> <span
                                 id="dislike-count-{{ $blog->id }}">{{ $blog->likes()->where('type', 'dislike')->count() }}</span>
                         </button>
+
+                        <a href="{{ route('blog.main_blog.edit', $blog->id) }}" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
+
+                        <form action="{{ route('blog.main_blog.destroy', $blog->id) }}" method="POST"
+                            onsubmit="return confirm('Are you sure you want to delete this blog?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                        </form>
 
                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                         <script>
@@ -66,17 +75,7 @@
                         </script>
 
                     </div>
-                    
-                    <div class="card-body d-flex justify-content-between">
-                        <a href="{{ route('blog.main_blog.edit', $blog->id) }}" class="btn btn-primary">Update</a>
 
-                        <form action="{{ route('blog.main_blog.destroy', $blog->id) }}" method="POST"
-                            onsubmit="return confirm('Are you sure you want to delete this blog?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </div>
 
 
                 </div>

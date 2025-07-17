@@ -49,7 +49,7 @@
 </div>
 
 @if(Auth::user()->role === 'admin')
-<div class="container mt-5">
+<div class="m-5 ">
     <h2>All Users</h2>
 
     @if (session('success'))

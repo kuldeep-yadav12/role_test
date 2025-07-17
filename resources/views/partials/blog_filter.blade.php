@@ -1,4 +1,4 @@
-<form action="{{ route('blog.main_blog.index') }}" method="GET" class="row g-3 mb-4" id="blog-filter-form">
+<form action="{{ route('blog.main_blog.index') }}" method="GET" class="row g-3 mb-4 align-items-center d-flex" id="blog-filter-form">
     <div class="col">
         <input type="text" name="title" class="form-control" placeholder="Name" value="{{ request('title') }}">
     </div>
@@ -12,5 +12,5 @@
         <button type="submit" class="btn btn-primary mr-3">Filter</button>
         <button type="button" id="reset-button" class="btn btn-secondary">Reset</button>
     </div>
+    <a href="{{ route('blog.main_blog.create') }}" class="btn btn-success">+ Add Blog</a>
 </form>
-

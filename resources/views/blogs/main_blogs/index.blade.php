@@ -1,10 +1,9 @@
 @extends('layout.app')
 
 @section('contant')
-<div class="container mt-5">
+<div class="m-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>All Blogs</h2>
-        <a href="{{ route('blog.main_blog.create') }}" class="btn btn-success">+ Add Blog</a>
     </div>
     @include('partials.blog_filter')
 

@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('contant')
-<div class="container mt-5">
+<div class="m-5">
     <div class="card shadow-lg p-4 mx-auto" style="max-width: 600px;">
         <div class="text-center">
             <!-- Profile Image -->
