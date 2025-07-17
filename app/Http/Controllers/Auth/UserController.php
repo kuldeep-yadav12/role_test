@@ -65,11 +65,43 @@ class UserController extends Controller
         return view('home', compact('users', 'userCount', 'postCount'));
     }
 
-    public function listAll()
-    {
-        $users = User::all();
-        return view('users', compact('users'));
+    public function listAll(Request $request)
+{
+    $query = User::query();
+
+    if ($request->filled('name')) {
+        $query->where('name', 'like', '%' . $request->name . '%');
     }
+
+    if ($request->filled('email')) {
+        $query->where('email', 'like', '%' . $request->email . '%');
+    }
+
+    if ($request->filled('phone')) {
+        $query->where('phone', 'like', '%' . $request->phone . '%');
+    }
+
+    if ($request->filled('gender')) {
+        $query->where('gender', $request->gender);
+    }
+
+    if ($request->filled('age')) {
+        $query->where('age', $request->age);
+    }
+
+    if ($request->filled('start_date')) {
+        $query->whereDate('created_at', '>=', $request->start_date);
+    }
+
+    if ($request->filled('end_date')) {
+        $query->whereDate('created_at', '<=', $request->end_date);
+    }
+
+    $users = $query->get();
+
+    return view('users', compact('users'));
+}
+
 
     // Show edit form
     public function edit($id)
@@ -138,5 +170,7 @@ class UserController extends Controller
 
         return redirect()->route('user.profile')->with('success', 'Profile image updated successfully!');
     }
+
+    
 
 }
