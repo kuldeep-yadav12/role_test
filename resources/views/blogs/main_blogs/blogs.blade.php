@@ -14,6 +14,7 @@
             </div>
             <a href="/comment/{{ $blog->id }}"><button>Comment</button></a>
             
+            
             @php
     $userLike = $blog->likes->where('user_id', auth()->id())->first();
     $likesCount = $blog->likes->where('type', 'like')->count();
@@ -22,28 +23,47 @@
 
 <div class="card-footer d-flex justify-content-center align-items-center">
 
-    {{-- Like Button --}}
-    <form action="{{ route('blogs.like', $blog->id) }}" method="POST" class="d-flex align-items-center gap-1">
-        @csrf
-        <input type="hidden" name="type" value="like">
-        <button type="submit" class="btn btn-sm {{ $userLike && $userLike->type === 'like' ? 'btn-success' : 'btn-outline-success' }}">
-          <i class="fa-solid fa-thumbs-up"></i>
+    <button class="btn btn-success like-btn"
+            data-id="{{ $blog->id }}"
+            data-type="like">
+             <i class="fa-solid fa-thumbs-up"></i> <span id="like-count-{{ $blog->id }}">{{ $blog->likes()->where('type', 'like')->count() }}</span>
         </button>
-        <span>{{ $likesCount }}</span>
-    </form>
 
-    {{-- Dislike Button --}}
-    <form action="{{ route('blogs.like', $blog->id) }}" method="POST" class="d-flex align-items-center gap-1">
-        @csrf
-        <input type="hidden" name="type" value="dislike">
-        <button type="submit" class="btn btn-sm {{ $userLike && $userLike->type === 'dislike' ? 'btn-danger' : 'btn-outline-danger' }} ml-3">
-           <i class="fa-solid fa-thumbs-down"></i>
+        <button class="btn btn-danger dislike-btn ml-3"
+            data-id="{{ $blog->id }}"
+            data-type="dislike">
+              <i class="fa-solid fa-thumbs-down"></i>  <span id="dislike-count-{{ $blog->id }}">{{ $blog->likes()->where('type', 'dislike')->count() }}</span>
         </button>
-        <span>{{ $dislikesCount }}</span>
-    </form>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    $('.like-btn, .dislike-btn').click(function () {
+        let blogId = $(this).data('id');
+        let type = $(this).data('type');
+
+        $.ajax({
+            url: '{{ route("like.toggle") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                blog_id: blogId,
+                type: type
+            },
+            success: function (data) {
+                $('#like-count-' + blogId).text(data.likes);
+                $('#dislike-count-' + blogId).text(data.dislikes);
+            },
+            error: function (xhr) {
+                alert('You must be logged in or something went wrong.');
+                console.log(xhr.responseText);
+            }
+        });
+    });
+});
+</script>
 
 </div>
-
             <div class="card-body d-flex justify-content-between">
                 <a href="{{ route('blog.main_blog.edit', $blog->id) }}" class="btn btn-primary">Update</a>
 
@@ -64,3 +84,8 @@
     {{ $blogs->links('pagination::simple-bootstrap-5') }}
 </div>
 @endif
+
+
+
+
+

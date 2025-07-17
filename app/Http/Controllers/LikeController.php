@@ -9,32 +9,38 @@ use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller
 {
-    public function LikeDislike(Request $request, Blog $blog)
-    {
-        $request->validate([
-            'type' => 'required|in:like,dislike',
-        ]);
+    public function toggleLikeDislike(Request $request)
+{
+    $request->validate([
+        'blog_id' => 'required|exists:blogs,id',
+        'type' => 'required|in:like,dislike',
+    ]);
 
-        $like = Like::where('user_id', auth()->id())
-            ->where('blog_id', $blog->id)
-            ->first();
+    $like = Like::where('user_id', Auth::id())
+                ->where('blog_id', $request->blog_id)
+                ->first();
 
-        if ($like) {
-            if ($like->type === $request->type) {
-                $like->delete();
-            } else {
-                $like->update(['type' => $request->type]);
-            }
+    if ($like) {
+        if ($like->type === $request->type) {
+            $like->delete(); 
         } else {
-            Like::create([
-                'user_id' => auth()->id(),
-                'blog_id' => $blog->id,
-                'type'    => $request->type,
-            ]);
+            $like->update(['type' => $request->type]);
         }
-
-        return back()->with('success', 'Your feedback was recorded.');
+    } else {
+        Like::create([
+            'user_id' => Auth::id(),
+            'blog_id' => $request->blog_id,
+            'type' => $request->type,
+        ]);
     }
+
+    $likes = Like::where('blog_id', $request->blog_id)->where('type', 'like')->count();
+    $dislikes = Like::where('blog_id', $request->blog_id)->where('type', 'dislike')->count();
+
+    return response()->json([
+        'likes' => $likes,
+        'dislikes' => $dislikes
+    ]);
 }
 
-
+}
