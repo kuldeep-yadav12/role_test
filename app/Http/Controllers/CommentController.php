@@ -1,9 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
+
 use App\Models\Blog;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -16,16 +17,40 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'body' => 'required|string|max:1000',
+            'body'    => 'required|string|max:1000',
             'blog_id' => 'required|exists:blogs,id',
         ]);
 
         Comment::create([
-            'body' => $request->body,
+            'body'    => $request->body,
             'blog_id' => $request->blog_id,
             'user_id' => auth()->id(),
         ]);
 
         return redirect()->back()->with('success', 'Comment added!');
     }
+
+    public function like(Comment $comment)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $comment->likes += 1;
+        $comment->save();
+
+        return response()->json(['success' => true, 'likes' => $comment->likes]);
+    }
+
+    public function destroy(Comment $comment)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $comment->delete();
+
+        return response()->json(['success' => true]);
+    }
+
 }
