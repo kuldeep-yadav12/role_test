@@ -25,8 +25,12 @@
         <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
     </div>
     <div class="col d-flex">
-        <button type="submit" class="btn btn-primary mr-3">Filter</button>
-        <button type="button" id="reset-button" class="btn btn-secondary">Reset</button>
+        <button type="submit" class="btn btn-primary ">Filter</button>
+        <button type="button" id="reset-button" class="btn btn-secondary mx-2">Reset</button>
+        <button class="btn btn-danger bulk-action-btn" data-target=".user-checkbox"
+            data-url="{{ route('users.bulkSoftDelete') }}"
+            data-confirm="Are you sure you want to delete selected users?">
+            <i class="fa fa-trash"></i>
+        </button>
     </div>
 </form>
-

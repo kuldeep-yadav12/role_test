@@ -39,11 +39,6 @@
                 @include('partials.user-table', ['users' => $users, 'showActions' => true])
             </tbody>
         </table>
-        <button class="btn btn-danger bulk-action-btn" data-target=".user-checkbox"
-            data-url="{{ route('users.bulkSoftDelete') }}"
-            data-confirm="Are you sure you want to delete selected users?">
-            Delete Selected
-        </button>
     </div>
 
     {{-- Trash Users Tab --}}
