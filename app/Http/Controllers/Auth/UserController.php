@@ -200,6 +200,7 @@ public function forceDelete($id)
     return redirect()->back()->with('success', 'User permanently deleted!');
 }
 
+
     
 
 }

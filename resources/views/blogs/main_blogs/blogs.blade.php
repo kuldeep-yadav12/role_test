@@ -1,5 +1,5 @@
 @if ($blogs->isEmpty())
-    <div class="alert alert-info">No blogs available yet.</div>
+<div class="alert alert-info">No blogs available yet.</div>
 @else
     <div class="row">
         @foreach ($blogs as $blog)
@@ -95,10 +95,64 @@
 
                 </div>
             </div>
-        @endforeach
-    </div>
 
-    <div class="mt-4 d-flex justify-content-center">
-        {{ $blogs->links('pagination::simple-bootstrap-5') }}
+            @foreach ($blog->comments as $comment)
+            <p><strong>{{ $comment->user->name }}:</strong> {{ $comment->body }}</p>
+            @endforeach
+
+
+            <form action="{{ route('comments.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="blog_id" value="{{ $blog->id }}">
+                <textarea name="body" rows="2" placeholder="Add a comment..." required></textarea>
+                <button type="submit">Comment</button>
+            </form>
+
+
+
+            @php
+            $userLike = $blog->likes->where('user_id', auth()->id())->first();
+            $likesCount = $blog->likes->where('type', 'like')->count();
+            $dislikesCount = $blog->likes->where('type', 'dislike')->count();
+            @endphp
+
+            <div class="card-footer d-flex justify-content-between align-items-center">
+
+
+
+                <a class="btn btn-warning" href="/comment/{{ $blog->id }}"><i class="fa-solid fa-comment"></i></a>
+
+                <button class="btn btn-success like-btn" data-id="{{ $blog->id }}" data-type="like">
+                    <i class="fa-solid fa-thumbs-up"></i> <span id="like-count-{{ $blog->id }}">{{ $blog->likes()->where('type', 'like')->count() }}</span>
+                </button>
+
+                <button class="btn btn-danger dislike-btn" data-id="{{ $blog->id }}" data-type="dislike">
+                    <i class="fa-solid fa-thumbs-down"></i> <span id="dislike-count-{{ $blog->id }}">{{ $blog->likes()->where('type', 'dislike')->count() }}</span>
+                </button>
+
+                <a href="{{ route('blog.main_blog.edit', $blog->id) }}" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
+
+                <form action="{{ route('blog.main_blog.destroy', $blog->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this blog?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                </form>
+
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script>
+                   
+                </script>
+
+            </div>
+
+
+
+        </div>
     </div>
+    @endforeach
+</div>
+
+<div class="mt-4 d-flex justify-content-center">
+    {{ $blogs->links('pagination::simple-bootstrap-5') }}
+</div>
 @endif
