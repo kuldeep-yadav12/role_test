@@ -24,13 +24,32 @@
                 </div>
 
                 <!-- Image -->
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label class="form-label">Image</label>
                     <input type="file" name="image" class="form-control">
                     @if($blog->image)
                         <img src="{{ asset('storage/' . $blog->image) }}" width="120" class="mt-2 rounded border">
                     @endif
-                </div>
+                </div> --}}
+                <div class="mb-3">
+            <label>Existing Images</label>
+            <div class="row">
+                @foreach ($blog->images as $image)
+                    <div class="col-md-3 mb-3">
+                        <img src="{{ asset('storage/' . $image->image_path) }}" style="width:100%; height:150px; object-fit:cover;">
+                        <div class="form-check mt-2">
+                            <input type="checkbox" name="remove_images[]" value="{{ $image->id }}" class="form-check-input">
+                            <label class="form-check-label p-0">Remove</label>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="images" class="form-label">Add New Images</label>
+            <input type="file" name="images[]" class="form-control" multiple>
+        </div>
 
                 <!-- Submit -->
                 <button type="submit" class="btn btn-success">Update Blog</button>

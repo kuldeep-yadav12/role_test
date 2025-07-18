@@ -28,8 +28,10 @@
         </div>
 
         <div class="mb-3">
-            <label for="image" class="form-label">Upload Image</label>
-            <input type="file" name="image" class="form-control">
+            <label for="images" class="form-label">Upload Image</label>
+            {{-- <input type="file" name="image" class="form-control"> --}}
+             <input type="file" name="images[]" multiple class="form-control" />
+
         </div>
         
 

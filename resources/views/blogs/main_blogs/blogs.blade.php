@@ -5,10 +5,24 @@
         @foreach ($blogs as $blog)
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    @if ($blog->image)
-                        <img src="{{ asset('storage/' . $blog->image) }}" class="card-img-top"
-                            style="object-fit: cover; height: 200px;" alt="Blog Image">
-                    @endif
+                 @if ($blog->images->count())
+    <div class="swiper blog-swiper-{{ $blog->id }}">
+        <div class="swiper-wrapper">
+            @foreach ($blog->images as $image)
+                <div class="swiper-slide">
+                    <img src="{{ asset('storage/' . $image->image_path) }}" class="card-img-top" style="object-fit: cover; height: 200px;" alt="Blog Image">
+                </div>
+            @endforeach
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+@else
+    <img src="{{ asset('images/no-image.png') }}" class="card-img-top" style="object-fit: cover; height: 200px;" alt="No Image">
+@endif
+
+
+
                     <div class="card-body">
                         <h5 class="card-title">{{ $blog->title }}</h5>
                         <p class="card-text">{{ Str::limit($blog->content, 150) }}</p>

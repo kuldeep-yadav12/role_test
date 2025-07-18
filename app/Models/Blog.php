@@ -21,5 +21,9 @@ class Blog extends Model
     return $this->hasMany(Like::class);
 }
 
+public function images()
+{
+    return $this->hasMany(BlogImage::class);
+}
 
 }

@@ -38,25 +38,46 @@ class BlogController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
-            'title'   => 'required',
-            'content' => 'required',
-            'image'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        // $request->validate([
+        //     'title'   => 'required',
+        //     'content' => 'required',
+        //     'image'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        // ]);
 
-        $data = $request->only(['title', 'content']);
+        // $data = $request->only(['title', 'content']);
 
-        if ($request->hasFile('image')) {
-            $imagePath     = $request->file('image')->store('blogs', 'public');
-            $data['image'] = $imagePath;
+        // if ($request->hasFile('image')) {
+        //     $imagePath     = $request->file('image')->store('blogs', 'public');
+        //     $data['image'] = $imagePath;
+        // }
+        // $data['user_id'] = auth()->id();
+
+        // Blog::create($data);
+
+        // return redirect()->route('blog.main_blog.index')->with('success', 'Blog created!');
+
+       
+    $request->validate([
+        'title' => 'required',
+        'content' => 'required',
+        'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+    ]);
+
+    $data = $request->only(['title', 'content']);
+    $data['user_id'] = auth()->id();
+
+    $blog = Blog::create($data);
+
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $image) {
+            $path = $image->store('blogs', 'public');
+            $blog->images()->create(['image_path' => $path]);
         }
-
-        $data['user_id'] = auth()->id();
-
-        Blog::create($data);
-
-        return redirect()->route('blog.main_blog.index')->with('success', 'Blog created!');
     }
+
+    return redirect()->route('blog.main_blog.index')->with('success', 'Blog created!');
+}
+
 
     /**
      * Display the specified resource.
@@ -87,33 +108,74 @@ class BlogController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    // public function update(Request $request, string $id)
+    // {
+    //     $blog = Blog::findOrFail($id);
+
+    //     // Prevent unauthorized users from editing
+    //     if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
+    //         abort(403);
+    //     }
+
+    //     $request->validate([
+    //         'title'   => 'required',
+    //         'content' => 'required',
+    //         'image'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    //     ]);
+
+    //     $data = $request->only(['title', 'content']);
+
+    //     // Handle image upload
+    //     if ($request->hasFile('image')) {
+    //         $imagePath     = $request->file('image')->store('blogs', 'public');
+    //         $data['image'] = $imagePath;
+    //     }
+
+    //     $blog->update($data);
+
+    //     return redirect()->route('blog.main_blog.index')->with('success', 'Blog updated successfully!');
+    // }
+
     public function update(Request $request, string $id)
-    {
-        $blog = Blog::findOrFail($id);
+{
+    $blog = Blog::findOrFail($id);
 
-        // Prevent unauthorized users from editing
-        if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $request->validate([
-            'title'   => 'required',
-            'content' => 'required',
-            'image'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        $data = $request->only(['title', 'content']);
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $imagePath     = $request->file('image')->store('blogs', 'public');
-            $data['image'] = $imagePath;
-        }
-
-        $blog->update($data);
-
-        return redirect()->route('blog.main_blog.index')->with('success', 'Blog updated successfully!');
+    if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
+        abort(403);
     }
+
+    $request->validate([
+        'title' => 'required',
+        'content' => 'required',
+        'images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        'remove_images' => 'array'
+    ]);
+
+    $data = $request->only(['title', 'content']);
+    $blog->update($data);
+
+    // Remove selected images
+    if ($request->has('remove_images')) {
+        foreach ($request->remove_images as $imageId) {
+            $image = $blog->images()->find($imageId);
+            if ($image) {
+                \Storage::disk('public')->delete($image->image_path);
+                $image->delete();
+            }
+        }
+    }
+
+    // Add new images
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $image) {
+            $path = $image->store('blogs', 'public');
+            $blog->images()->create(['image_path' => $path]);
+        }
+    }
+
+    return redirect()->route('blog.main_blog.index')->with('success', 'Blog updated!');
+}
+
 
     /**
      * Remove the specified resource from storage.

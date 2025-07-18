@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +9,36 @@
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <title>First Project</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .swiper {
+            width: 100%;
+            height:200px;
+           object-fit: cover;
+           background: :transparent;
+            overflow: hidden;
+        }
+
+        .swiper-slide {
+            text-align: center;
+            font-size: 18px;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color:white;
+            width:24px;
+            height:24px;
+        }
+    </style>
 </head>
+
 <body>
     <div class="container-scroller">
         @include('layout.sidebar')
@@ -23,9 +51,25 @@
                 </div>
             </div>
         </div>
-         
+
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".swiper").forEach((swiperEl) => {
+                new Swiper(swiperEl, {
+                    loop: true,
+                    navigation: {
+                        nextEl: swiperEl.querySelector(".swiper-button-next"),
+                        prevEl: swiperEl.querySelector(".swiper-button-prev"),
+                    },
+                });
+            });
+        });
+    </script>
+
     @include('layout.footer')
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </html>
