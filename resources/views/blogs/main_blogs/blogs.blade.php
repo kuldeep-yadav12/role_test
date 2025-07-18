@@ -30,7 +30,7 @@
                 @if ($blog->user)
                 <div class="d-flex align-items-center mb-3">
                     @if ($blog->user->image)
-                    <img src="{{ asset('storage/' . $blog->user->image) }}" alt="User Image" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                    <img src="{{ asset('storage/' . $blog->user->image) }}" alt="User Image" class="rounded-circle mr-3" style="width: 40px; height: 40px; object-fit: cover;">
                     @else
                     <img src="{{ asset('default-avatar.png') }}" alt="Default Image" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                     @endif
