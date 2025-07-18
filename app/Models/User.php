@@ -31,7 +31,7 @@ protected static function boot()
     parent::boot();
 
     static::restoring(function ($user) {
-        \Log::info("Restoring user: " . $user->id); // <- logging
+        \Log::info("Restoring user: " . $user->id); 
         $user->blogs()->withTrashed()->restore();
     });
 
