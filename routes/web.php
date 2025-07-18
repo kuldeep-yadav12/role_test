@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CommentController;
 
 use App\Http\Controllers\Auth\LoginRegisterController;
+use App\Http\Controllers\BlogImageController;
 
 Route::get('/register', [UserController::class, 'index']);
 Route::post('/register', [UserController::class, 'store'])->name('user.store');
@@ -30,8 +31,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::put('/profile/update/{id}', [UserController::class, 'profile_update'])->name('profile.update');
-
-    // Route::post('/blogs/{blog}/like', [LikeController::class, 'LikeDislike'])->name('blogs.like');
     Route::post('/like-toggle', [LikeController::class, 'toggleLikeDislike'])->name('like.toggle');
 
 
@@ -45,10 +44,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/users/bulk-soft-delete', [UserController::class, 'bulkSoftDelete'])->name('users.bulkSoftDelete');
 
     Route::post('/users/bulk-restore', [UserController::class, 'bulkRestore'])->name('users.bulkRestore');
+    // Route::post('/blog-images/reorder', [BlogImageController::class, 'reorder'])->name('blog_images.reorder');
 
- 
-
-    
 
 });
 
