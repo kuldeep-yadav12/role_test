@@ -55,7 +55,7 @@
                 <div class="comment-section mt-2" id="comments-{{ $blog->id }}" style="display: none;">
                     @foreach ($blog->comments as $comment)
                     <div class="mb-2 border-bottom pb-2 comment-row" id="comment-{{ $comment->id }}">
-                        <p><strong>{{ $comment->user->name }}:</strong> {{ $comment->body }}</p>
+                        <p><strong>{{ $comment->user->name ?? 'Unknown User' }}:</strong> {{ $comment->body }}</p>
 
                         <div class="d-flex align-items-center gap-2">
                             {{-- ✅ Show to admin only --}}
