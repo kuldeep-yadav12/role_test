@@ -200,6 +200,21 @@ public function forceDelete($id)
     return redirect()->back()->with('success', 'User permanently deleted!');
 }
 
+public function bulkSoftDelete(Request $request)
+{
+    $request->validate([
+        'user_ids' => 'required|array',
+        'user_ids.*' => 'exists:users,id',
+    ]);
+
+    // Exclude current user (admin himself)
+    $userIds = array_diff($request->user_ids, [auth()->id()]);
+
+    User::whereIn('id', $userIds)->delete();
+
+    return response()->json(['message' => 'Selected users soft deleted successfully.']);
+}
+
 
     
 

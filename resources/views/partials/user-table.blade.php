@@ -25,6 +25,7 @@
                     </form>
                 </td>
             @endif
+            <td><input type="checkbox" class="user-checkbox" name="user_ids[]" value="{{ $user->id }}"></td>
         </tr>
     @endforeach
 @else

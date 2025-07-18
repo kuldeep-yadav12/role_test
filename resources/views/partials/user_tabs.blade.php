@@ -1,7 +1,7 @@
 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
-            type="button" role="tab" aria-controls="pills-home" aria-selected="true">All Users</button>
+        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button"
+            role="tab" aria-controls="pills-home" aria-selected="true">All Users</button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
@@ -32,6 +32,7 @@
                     <th>Hobbies</th>
                     <th>Role</th>
                     <th width="180px">Actions</th>
+                    <th><input type="checkbox" id="select-all-users"></th>
                 </tr>
             </thead>
             <tbody id="user-table">
@@ -71,9 +72,11 @@
                             <td>{{ $user->hobbies }}</td>
                             <td>{{ $user->role }}</td>
                             <td>
-                                <a href="{{ route('user.restore', $user->id) }}" class="btn btn-success btn-sm">Restore</a>
+                                <a href="{{ route('user.restore', $user->id) }}"
+                                    class="btn btn-success btn-sm">Restore</a>
 
-                                <form action="{{ route('user.forceDelete', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to permanently delete?')">
+                                <form action="{{ route('user.forceDelete', $user->id) }}" method="POST"
+                                    class="d-inline" onsubmit="return confirm('Are you sure to permanently delete?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm">Delete Permanently</button>
@@ -88,3 +91,47 @@
         @endif
     </div>
 </div>
+
+<button type="button" id="bulk-soft-delete" class="btn btn-danger mb-2">
+    Delete Selected
+</button>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#select-all-users').on('change', function() {
+        $('.user-checkbox').prop('checked', $(this).is(':checked'));
+    });
+
+    $('#bulk-soft-delete').on('click', function() {
+        let selected = [];
+        $('.user-checkbox:checked').each(function() {
+            selected.push($(this).val());
+        });
+
+        if (selected.length === 0) {
+            alert("Please select at least one user.");
+            return;
+        }
+
+        if (!confirm("Are you sure you want to soft delete selected users?")) {
+            return;
+        }
+
+        $.ajax({
+            url: "{{ route('users.bulkSoftDelete') }}",
+            method: 'POST',
+            data: {
+                user_ids: selected,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                alert(response.message);
+                location.reload();
+            },
+            error: function(err) {
+                console.log(err);
+                alert('Something went wrong.');
+            }
+        });
+    });
+</script>
