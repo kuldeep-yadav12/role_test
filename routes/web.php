@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\CommentController;
+
 use App\Http\Controllers\Auth\LoginRegisterController;
 
 Route::get('/register', [UserController::class, 'index']);
@@ -32,7 +34,7 @@ Route::middleware(['auth'])->group(function () {
     // Route::post('/blogs/{blog}/like', [LikeController::class, 'LikeDislike'])->name('blogs.like');
     Route::post('/like-toggle', [LikeController::class, 'toggleLikeDislike'])->name('like.toggle');
 
-    
+
     Route::get('/all-users', [UserController::class, 'listAll'])->name('user.list');
 
     Route::get('/main-blogs', [BlogController::class, 'blogFilter'])->name('blog.main_blog.index');
@@ -40,4 +42,6 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-Route::post('/comments', [App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
+Route::get('/comment/{id}', [CommentController::class, 'show'])->name('comments.show');
+Route::post('/comment/store', [CommentController::class, 'store'])->name('comments.store');
+
