@@ -149,16 +149,16 @@ class BlogController extends Controller
     $data = $request->only(['title', 'content']);
     $blog->update($data);
 
-    // Remove selected images
-    if ($request->has('remove_images')) {
-        foreach ($request->remove_images as $imageId) {
-            $image = $blog->images()->find($imageId);
-            if ($image) {
-                \Storage::disk('public')->delete($image->image_path);
-                $image->delete();
-            }
-        }
-    }
+    // // Remove selected images
+    // if ($request->has('remove_images')) {
+    //     foreach ($request->remove_images as $imageId) {
+    //         $image = $blog->images()->find($imageId);
+    //         if ($image) {
+    //             \Storage::disk('public')->delete($image->image_path);
+    //             $image->delete();
+    //         }
+    //     }
+    // }
     // Add new images
     if ($request->hasFile('images')) {
         foreach ($request->file('images') as $image) {
