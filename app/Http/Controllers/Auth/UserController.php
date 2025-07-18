@@ -207,10 +207,13 @@ public function bulkSoftDelete(Request $request)
         'user_ids.*' => 'exists:users,id',
     ]);
 
-    // Exclude current user (admin himself)
     $userIds = array_diff($request->user_ids, [auth()->id()]);
 
-    User::whereIn('id', $userIds)->delete();
+     $users = User::whereIn('id', $userIds)->get();
+
+    foreach ($users as $user) {
+        $user->delete(); 
+    }
 
     return response()->json(['message' => 'Selected users soft deleted successfully.']);
 }
@@ -222,9 +225,11 @@ public function bulkRestore(Request $request)
         'user_ids.*' => 'exists:users,id',
     ]);
 
-    User::onlyTrashed()
-        ->whereIn('id', $request->user_ids)
-        ->restore();
+    $users = User::onlyTrashed()->whereIn('id', $request->user_ids)->get();
+
+    foreach ($users as $user) {
+        $user->restore(); 
+    }
 
     return response()->json(['message' => 'Users restored successfully.']);
 }

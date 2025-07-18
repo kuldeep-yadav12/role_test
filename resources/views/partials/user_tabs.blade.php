@@ -43,7 +43,13 @@
 
     {{-- Trash Users Tab --}}
     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-        <h2>Trash Users</h2>
+        <div class="d-flex justify-content-between">
+            <h2>Trash Users</h2>
+            <button class="btn btn-success bulk-action-btn" data-target=".trashed-user-checkbox"
+                data-url="{{ route('users.bulkRestore') }}" data-confirm="Restore selected users?">
+                Restore Selected
+            </button>
+        </div>
 
         @if ($trashedUsers->count())
             <table class="table table-bordered table-striped mt-4">
@@ -65,7 +71,8 @@
                 <tbody>
                     @foreach ($trashedUsers as $user)
                         <tr>
-                            <td><input type="checkbox" class="trashed-user-checkbox" name="user_ids[]" value="{{ $user->id }}"></td>
+                            <td><input type="checkbox" class="trashed-user-checkbox" name="user_ids[]"
+                                    value="{{ $user->id }}"></td>
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
@@ -89,11 +96,6 @@
                     @endforeach
                 </tbody>
             </table>
-
-            <button class="btn btn-success bulk-action-btn" data-target=".trashed-user-checkbox"
-                data-url="{{ route('users.bulkRestore') }}" data-confirm="Restore selected users?">
-                Restore Selected
-            </button>
         @else
             <div class="alert alert-info">No trashed users found.</div>
         @endif
