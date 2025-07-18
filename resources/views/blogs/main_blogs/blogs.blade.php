@@ -16,8 +16,10 @@
                     </div>
                     @endforeach
                 </div>
+                @if ($blog->images->count() > 1)
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
+                @endif
             </div>
             @else
             <img src="{{ asset('images/no-image.png') }}" class="card-img-top" style="object-fit: cover; height: 200px;" alt="No Image">
