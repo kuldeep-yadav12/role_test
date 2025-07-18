@@ -215,6 +215,21 @@ public function bulkSoftDelete(Request $request)
     return response()->json(['message' => 'Selected users soft deleted successfully.']);
 }
 
+public function bulkRestore(Request $request)
+{
+    $request->validate([
+        'user_ids' => 'required|array',
+        'user_ids.*' => 'exists:users,id',
+    ]);
+
+    User::onlyTrashed()
+        ->whereIn('id', $request->user_ids)
+        ->restore();
+
+    return response()->json(['message' => 'Users restored successfully.']);
+}
+
+
 
     
 
