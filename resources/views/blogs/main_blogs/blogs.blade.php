@@ -7,23 +7,27 @@
                 <div class="card h-100">
 
                     {{-- Swiper or default image --}}
-                    @if ($blog->images->count())
-                        <div class="swiper blog-swiper-{{ $blog->id }}">
-                            <div class="swiper-wrapper">
-                                @foreach ($blog->images as $image)
-                                    <div class="swiper-slide">
-                                        <img src="{{ asset('storage/' . $image->image_path) }}" class="card-img-top"
-                                            style="object-fit: cover; height: 200px;" alt="Blog Image">
-                                    </div>
-                                @endforeach
-                            </div>
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
-                        </div>
-                    @else
-                        <img src="{{ asset('images/no-image.png') }}" class="card-img-top"
-                            style="object-fit: cover; height: 200px;" alt="No Image">
-                    @endif
+                   @if ($blog->images->count())
+    <div class="swiper blog-swiper-{{ $blog->id }}">
+        <div class="swiper-wrapper">
+            @foreach ($blog->images as $image)
+                <div class="swiper-slide">
+                    <img src="{{ asset('storage/' . $image->image_path) }}" class="card-img-top"
+                        style="object-fit: cover; height: 200px;" alt="Blog Image">
+                </div>
+            @endforeach
+        </div>
+
+        @if ($blog->images->count() > 1)
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        @endif
+    </div>
+@else
+    <img src="{{ asset('images/no-image.png') }}" class="card-img-top"
+        style="object-fit: cover; height: 200px;" alt="No Image">
+@endif
+
 
                     <div class="card-body">
                         <h5 class="card-title">{{ $blog->title }}</h5>
