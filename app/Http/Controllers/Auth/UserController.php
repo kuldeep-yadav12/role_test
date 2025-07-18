@@ -55,14 +55,16 @@ class UserController extends Controller
         if (auth()->user()->role === 'admin') {
             $users     = User::all();
             $userCount = User::count();
+            $trashedUsers = User::onlyTrashed()->get();
             $postCount = \App\Models\Blog::count();
         } else {
             $users     = null;
             $userCount = null;
+            $trashedUsers  = collect();
             $postCount = \App\Models\Blog::where('user_id', auth()->id())->count();
         }
 
-        return view('home', compact('users', 'userCount', 'postCount'));
+        return view('home', compact('users', 'userCount', 'postCount','trashedUsers'));
     }
 
     public function listAll(Request $request)
@@ -98,6 +100,7 @@ class UserController extends Controller
     }
 
     $users = $query->get();
+    $trashedUsers = User::onlyTrashed()->get();
 
      if ($request->ajax()) {
     $html = view('partials.user-table', ['users' => $users, 'showActions' => true])->render();
@@ -107,7 +110,7 @@ class UserController extends Controller
 
     $userCount = User::count();
     $postCount = \App\Models\Blog::count();
-    return view('home', compact('users','userCount', 'postCount'));
+    return view('home', compact('users','userCount', 'postCount', 'trashedUsers'));
 }
 
 
@@ -178,6 +181,24 @@ class UserController extends Controller
 
         return redirect()->route('user.profile')->with('success', 'Profile image updated successfully!');
     }
+
+  
+
+    public function restore($id)
+{
+    $user = User::onlyTrashed()->findOrFail($id);
+    $user->restore();
+
+    return redirect()->back()->with('success', 'User restored successfully!');
+}
+
+public function forceDelete($id)
+{
+    $user = User::onlyTrashed()->findOrFail($id);
+    $user->forceDelete();
+
+    return redirect()->back()->with('success', 'User permanently deleted!');
+}
 
     
 
