@@ -13,17 +13,29 @@
                 <p class="card-text">{{ Str::limit($blog->content, 150) }}</p>
             </div>
 
-            @foreach ($blog->comments as $comment)
-            <p><strong>{{ $comment->user->name }}:</strong> {{ $comment->body }}</p>
-            @endforeach
 
+            <!-- Comment Icon with Count -->
+            <button type="button" class="btn btn-warning toggle-comments" data-id="{{ $blog->id }}">
+                <i class="fa-solid fa-comment"></i> {{ $blog->comments->count() }}
+            </button>
 
-            <form action="{{ route('comments.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="blog_id" value="{{ $blog->id }}">
-                <textarea name="body" rows="2" placeholder="Add a comment..." required></textarea>
-                <button type="submit">Comment</button>
-            </form>
+            <!-- Hidden Comment Section -->
+            <div class="comment-section mt-2" id="comments-{{ $blog->id }}" style="display: none;">
+                <div class="comments-list">
+                    @foreach ($blog->comments as $comment)
+                    <p><strong>{{ $comment->user->name }}:</strong> {{ $comment->body }}</p>
+                    @endforeach
+                </div>
+
+                <!-- Add Comment Form -->
+                <form action="{{ route('comments.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="blog_id" value="{{ $blog->id }}">
+                    <textarea name="body" rows="2" class="form-control mb-2" placeholder="Add a comment..." required></textarea>
+                    <button type="submit" class="btn btn-sm btn-primary">Comment</button>
+                </form>
+            </div>
+
 
 
 
@@ -37,7 +49,7 @@
 
 
 
-                <a class="btn btn-warning" href="/comment/{{ $blog->id }}"><i class="fa-solid fa-comment"></i></a>
+                {{-- <a class="btn btn-warning" href="/comment/{{ $blog->id }}"><i class="fa-solid fa-comment"></i></a> --}}
 
                 <button class="btn btn-success like-btn" data-id="{{ $blog->id }}" data-type="like">
                     <i class="fa-solid fa-thumbs-up"></i> <span id="like-count-{{ $blog->id }}">{{ $blog->likes()->where('type', 'like')->count() }}</span>
@@ -57,7 +69,7 @@
 
                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                 <script>
-                   
+
                 </script>
 
             </div>
@@ -68,6 +80,17 @@
     </div>
     @endforeach
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toggle-comments').forEach(button => {
+            button.addEventListener('click', function () {
+                const blogId = this.getAttribute('data-id');
+                const commentBox = document.getElementById('comments-' + blogId);
+                commentBox.style.display = commentBox.style.display === 'none' ? 'block' : 'none';
+            });
+        });
+    });
+</script>
 
 <div class="mt-4 d-flex justify-content-center">
     {{ $blogs->links('pagination::simple-bootstrap-5') }}
