@@ -6,6 +6,7 @@
             @continue
         @endif
         <tr>
+            <td><input type="checkbox" class="user-checkbox" name="user_ids[]" value="{{ $user->id }}"></td>
             <td>{{ $id++ }}</td>
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
@@ -25,7 +26,6 @@
                     </form>
                 </td>
             @endif
-            <td><input type="checkbox" class="user-checkbox" name="user_ids[]" value="{{ $user->id }}"></td>
         </tr>
     @endforeach
 @else

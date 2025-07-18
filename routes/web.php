@@ -44,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/users/bulk-soft-delete', [UserController::class, 'bulkSoftDelete'])->name('users.bulkSoftDelete');
 
+    Route::post('/users/bulk-restore', [UserController::class, 'bulkRestore'])->name('users.bulkRestore');
+
  
 
     

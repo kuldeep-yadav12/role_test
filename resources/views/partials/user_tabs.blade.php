@@ -23,6 +23,7 @@
         <table class="table table-bordered table-striped mt-4">
             <thead class="table-dark">
                 <tr>
+                    <th><input type="checkbox" class="select-all-checkbox" data-target=".user-checkbox"></th>
                     <th>#ID</th>
                     <th>Name</th>
                     <th>Email</th>
@@ -32,13 +33,17 @@
                     <th>Hobbies</th>
                     <th>Role</th>
                     <th width="180px">Actions</th>
-                    <th><input type="checkbox" id="select-all-users"></th>
                 </tr>
             </thead>
             <tbody id="user-table">
                 @include('partials.user-table', ['users' => $users, 'showActions' => true])
             </tbody>
         </table>
+        <button class="btn btn-danger bulk-action-btn" data-target=".user-checkbox"
+            data-url="{{ route('users.bulkSoftDelete') }}"
+            data-confirm="Are you sure you want to delete selected users?">
+            Delete Selected
+        </button>
     </div>
 
     {{-- Trash Users Tab --}}
@@ -49,6 +54,8 @@
             <table class="table table-bordered table-striped mt-4">
                 <thead class="table-dark">
                     <tr>
+                        <th><input type="checkbox" class="select-all-checkbox" data-target=".trashed-user-checkbox">
+                        </th>
                         <th>#ID</th>
                         <th>Name</th>
                         <th>Email</th>
@@ -63,6 +70,7 @@
                 <tbody>
                     @foreach ($trashedUsers as $user)
                         <tr>
+                            <td><input type="checkbox" class="trashed-user-checkbox" name="user_ids[]" value="{{ $user->id }}"></td>
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
@@ -86,25 +94,34 @@
                     @endforeach
                 </tbody>
             </table>
+
+            <button class="btn btn-success bulk-action-btn" data-target=".trashed-user-checkbox"
+                data-url="{{ route('users.bulkRestore') }}" data-confirm="Restore selected users?">
+                Restore Selected
+            </button>
         @else
             <div class="alert alert-info">No trashed users found.</div>
         @endif
     </div>
 </div>
 
-<button type="button" id="bulk-soft-delete" class="btn btn-danger mb-2">
-    Delete Selected
-</button>
+
+
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $('#select-all-users').on('change', function() {
-        $('.user-checkbox').prop('checked', $(this).is(':checked'));
+    // Handle select all
+    $('.select-all-checkbox').on('change', function() {
+        const targetClass = $(this).data('target');
+        $(targetClass).prop('checked', $(this).is(':checked'));
     });
 
-    $('#bulk-soft-delete').on('click', function() {
-        let selected = [];
-        $('.user-checkbox:checked').each(function() {
+    // Handle bulk action
+    $('.bulk-action-btn').on('click', function() {
+        const checkboxes = $(this).data('target');
+        const selected = [];
+        $(checkboxes + ':checked').each(function() {
             selected.push($(this).val());
         });
 
@@ -113,19 +130,17 @@
             return;
         }
 
-        if (!confirm("Are you sure you want to soft delete selected users?")) {
-            return;
-        }
+        const confirmMessage = $(this).data('confirm');
+        if (!confirm(confirmMessage)) return;
 
         $.ajax({
-            url: "{{ route('users.bulkSoftDelete') }}",
+            url: $(this).data('url'),
             method: 'POST',
             data: {
+                _token: '{{ csrf_token() }}',
                 user_ids: selected,
-                _token: '{{ csrf_token() }}'
             },
-            success: function(response) {
-                alert(response.message);
+            success: function() {
                 location.reload();
             },
             error: function(err) {
