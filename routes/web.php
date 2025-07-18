@@ -40,6 +40,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/restore/{id}', [UserController::class, 'restore'])->name('user.restore');
     Route::delete('/user/force-delete/{id}', [UserController::class, 'forceDelete'])->name('user.forceDelete');
 
+    
+
 });
 
 Route::post('/comments', [App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
