@@ -30,7 +30,7 @@
                 @if ($blog->user)
                 <div class="d-flex align-items-center mb-3">
                     @if ($blog->user->image)
-                    <img src="{{ asset('storage/' . $blog->user->image) }}" alt="User Image" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                    <img src="{{ asset('storage/' . $blog->user->image) }}" alt="User Image" class="rounded-circle mr-3" style="width: 40px; height: 40px; object-fit: cover;">
                     @else
                     <img src="{{ asset('default-avatar.png') }}" alt="Default Image" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                     @endif
@@ -54,8 +54,29 @@
 
                 <div class="comment-section mt-2" id="comments-{{ $blog->id }}" style="display: none;">
                     @foreach ($blog->comments as $comment)
-                    <p><strong>{{ $comment->user->name }}:</strong> {{ $comment->body }}</p>
+                    <div class="mb-2 border-bottom pb-2 comment-row" id="comment-{{ $comment->id }}">
+                        <p><strong>{{ $comment->user->name ?? 'Unknown User' }}:</strong> {{ $comment->body }}</p>
+
+                        <div class="d-flex align-items-center gap-2">
+                            {{-- ✅ Show to admin only --}}
+                            @if(auth()->user()->role === 'admin')
+                            {{-- Like Button --}}
+                            <button class="btn btn-sm btn-outline-success like-comment-btn" data-id="{{ $comment->id }}">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                                <span id="like-count-{{ $comment->id }}">{{ $comment->likes }}</span>
+                            </button>
+
+                            {{-- Delete Button --}}
+                            <button class="btn btn-sm btn-outline-danger delete-comment-btn" data-id="{{ $comment->id }}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            @endif
+                        </div>
+                    </div>
                     @endforeach
+
+
+
 
                     <form action="{{ route('comments.store') }}" method="POST">
                         @csrf
@@ -108,6 +129,52 @@
     });
 
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Like comment
+    $(document).on('click', '.like-comment-btn', function() {
+        const commentId = $(this).data('id');
+        $.ajax({
+            url: `/comments/${commentId}/like`
+            , method: 'POST'
+            , data: {
+                _token: '{{ csrf_token() }}'
+            }
+            , success: function(response) {
+                if (response.success) {
+                    $('#like-count-' + commentId).text(response.likes);
+                }
+            }
+            , error: function() {
+                alert('Error liking comment.');
+            }
+        });
+    });
+
+    // Delete comment
+    $(document).on('click', '.delete-comment-btn', function() {
+        if (!confirm('Are you sure you want to delete this comment?')) return;
+
+        const commentId = $(this).data('id');
+        $.ajax({
+            url: `/comments/${commentId}`
+            , method: 'DELETE'
+            , data: {
+                _token: '{{ csrf_token() }}'
+            }
+            , success: function(response) {
+                if (response.success) {
+                    $('#comment-' + commentId).remove();
+                }
+            }
+            , error: function() {
+                alert('Error deleting comment.');
+            }
+        });
+    });
+
+</script>
+
 
 <div class="mt-4 d-flex justify-content-center">
     {{ $blogs->links('pagination::simple-bootstrap-5') }}
