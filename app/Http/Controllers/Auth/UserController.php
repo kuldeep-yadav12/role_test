@@ -60,6 +60,7 @@ class UserController extends Controller
         } else {
             $users     = null;
             $userCount = null;
+            $trashedUsers  = collect();
             $postCount = \App\Models\Blog::where('user_id', auth()->id())->count();
         }
 
@@ -99,6 +100,7 @@ class UserController extends Controller
     }
 
     $users = $query->get();
+    $trashedUsers = User::onlyTrashed()->get();
 
      if ($request->ajax()) {
     $html = view('partials.user-table', ['users' => $users, 'showActions' => true])->render();
@@ -108,7 +110,7 @@ class UserController extends Controller
 
     $userCount = User::count();
     $postCount = \App\Models\Blog::count();
-    return view('home', compact('users','userCount', 'postCount'));
+    return view('home', compact('users','userCount', 'postCount', 'trashedUsers'));
 }
 
 

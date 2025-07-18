@@ -49,7 +49,7 @@
 
     @if (Auth::user()->role === 'admin')
     <div class="m-5">
-        @include('partials.user_tabs')
+        @include('partials.user_tabs', ['users' => $users, 'trashedUsers' => $trashedUsers])
     </div>
 @endif
 
