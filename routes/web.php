@@ -38,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/all-users', [UserController::class, 'listAll'])->name('user.list');
 
     Route::get('/main-blogs', [BlogController::class, 'blogFilter'])->name('blog.main_blog.index');
-    
+
     Route::get('/user/restore/{id}', [UserController::class, 'restore'])->name('user.restore');
     Route::delete('/user/force-delete/{id}', [UserController::class, 'forceDelete'])->name('user.forceDelete');
 
@@ -46,12 +46,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/users/bulk-restore', [UserController::class, 'bulkRestore'])->name('users.bulkRestore');
 
- 
-
-    
-
 });
 
 Route::get('/comment/{id}', [CommentController::class, 'show'])->name('comments.show');
 Route::post('/comment/store', [CommentController::class, 'store'])->name('comments.store');
 
+// Like a comment
+Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('comments.like');
+
+// Delete a comment (admin only)
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
