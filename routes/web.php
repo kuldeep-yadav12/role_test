@@ -48,11 +48,19 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-Route::get('/comment/{id}', [CommentController::class, 'show'])->name('comments.show');
-Route::post('/comment/store', [CommentController::class, 'store'])->name('comments.store');
 
-// Like a comment
-Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('comments.like');
+// Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('comments.like');
 
-// Delete a comment (admin only)
-Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+// Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/comment/{id}', [CommentController::class, 'show'])->name('comments.show');
+    Route::post('/comment/store', [CommentController::class, 'store'])->name('comments.store');
+    // Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('comments.like');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::get('/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+});

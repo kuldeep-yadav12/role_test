@@ -58,15 +58,25 @@
                         <p><strong>{{ $comment->user->name ?? 'Unknown User' }}:</strong> {{ $comment->body }}</p>
 
                         <div class="d-flex align-items-center gap-2">
-                            {{-- ✅ Show to admin only --}}
+                            {{-- ✅ Admin actions only --}}
                             @if(auth()->user()->role === 'admin')
-                            {{-- Like Button --}}
+                            {{-- 👍 Like --}}
                             <button class="btn btn-sm btn-outline-success like-comment-btn" data-id="{{ $comment->id }}">
                                 <i class="fa-solid fa-thumbs-up"></i>
                                 <span id="like-count-{{ $comment->id }}">{{ $comment->likes }}</span>
                             </button>
 
-                            {{-- Delete Button --}}
+                            {{-- 🗑️ Delete --}}
+                            <button class="btn btn-sm btn-outline-danger delete-comment-btn" data-id="{{ $comment->id }}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            @endif
+
+                            {{-- ✏️ User's own edit/delete --}}
+                            @if(auth()->id() === $comment->user_id)
+                            <button class="btn btn-sm btn-outline-primary edit-comment-btn" data-id="{{ $comment->id }}">
+                                <i class="fa fa-pen"></i>
+                            </button>
                             <button class="btn btn-sm btn-outline-danger delete-comment-btn" data-id="{{ $comment->id }}">
                                 <i class="fa fa-trash"></i>
                             </button>
@@ -86,6 +96,7 @@
                     </form>
                 </div>
             </div>
+
 
             @php
             $userLike = $blog->likes->where('user_id', auth()->id())->first();
@@ -131,49 +142,56 @@
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // Like comment
+    // Like Comment (Admin only)
     $(document).on('click', '.like-comment-btn', function() {
         const commentId = $(this).data('id');
-        $.ajax({
-            url: `/comments/${commentId}/like`
-            , method: 'POST'
-            , data: {
-                _token: '{{ csrf_token() }}'
-            }
-            , success: function(response) {
-                if (response.success) {
-                    $('#like-count-' + commentId).text(response.likes);
-                }
-            }
-            , error: function() {
-                alert('Error liking comment.');
-            }
+        $.post(`/comments/${commentId}/like`, {
+            _token: '{{ csrf_token() }}'
+        }, function(res) {
+            $(`#like-count-${commentId}`).text(res.likes);
         });
     });
 
-    // Delete comment
+    // Delete Comment
     $(document).on('click', '.delete-comment-btn', function() {
-        if (!confirm('Are you sure you want to delete this comment?')) return;
-
         const commentId = $(this).data('id');
-        $.ajax({
-            url: `/comments/${commentId}`
-            , method: 'DELETE'
-            , data: {
-                _token: '{{ csrf_token() }}'
-            }
-            , success: function(response) {
-                if (response.success) {
-                    $('#comment-' + commentId).remove();
+        if (confirm('Are you sure you want to delete this comment?')) {
+            $.ajax({
+                url: `/comments/${commentId}`
+                , type: 'DELETE'
+                , data: {
+                    _token: '{{ csrf_token() }}'
                 }
-            }
-            , error: function() {
-                alert('Error deleting comment.');
-            }
-        });
+                , success: function() {
+                    $(`#comment-${commentId}`).remove();
+                }
+            });
+        }
+    });
+
+    // Edit Comment (Your own only)
+    $(document).on('click', '.edit-comment-btn', function() {
+        const commentId = $(this).data('id');
+        const currentBody = $(`#comment-${commentId} p`).text().trim().split(':')[1].trim();
+        const newBody = prompt('Edit your comment:', currentBody);
+
+        if (newBody) {
+            $.ajax({
+                url: `/comments/${commentId}`
+                , type: 'PUT'
+                , data: {
+                    _token: '{{ csrf_token() }}'
+                    , body: newBody
+                }
+                , success: function() {
+                    $(`#comment-${commentId} p`).html(`<strong>{{ auth()->user()->name }}:</strong> ${newBody}`);
+                }
+            });
+        }
     });
 
 </script>
+
 
 
 <div class="mt-4 d-flex justify-content-center">

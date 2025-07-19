@@ -53,4 +53,30 @@ class CommentController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function edit(Comment $comment)
+    {
+        $this->authorize('update', $comment); // Use policy
+
+        return view('comments.edit', compact('comment'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $comment = Comment::findOrFail($id);
+
+        // Authorization (only owner can edit)
+        if (auth()->id() !== $comment->user_id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'body' => 'required|string|max:1000',
+        ]);
+
+        $comment->body = $request->body;
+        $comment->save();
+
+        return redirect()->back()->with('success', 'Comment updated successfully!');
+    }
+
 }
