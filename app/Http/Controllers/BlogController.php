@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 
@@ -108,37 +108,32 @@ class BlogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    // public function update(Request $request, string $id)
-    // {
-    //     $blog = Blog::findOrFail($id);
-
-    //     // Prevent unauthorized users from editing
-    //     if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
-    //         abort(403);
-    //     }
-
-    //     $request->validate([
-    //         'title'   => 'required',
-    //         'content' => 'required',
-    //         'image'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    //     ]);
-
-    //     $data = $request->only(['title', 'content']);
-
-    //     // Handle image upload
-    //     if ($request->hasFile('image')) {
-    //         $imagePath     = $request->file('image')->store('blogs', 'public');
-    //         $data['image'] = $imagePath;
-    //     }
-
-    //     $blog->update($data);
-
-    //     return redirect()->route('blog.main_blog.index')->with('success', 'Blog updated successfully!');
-    // }
-
     public function update(Request $request, string $id)
-{
-    $blog = Blog::findOrFail($id);
+    {
+        // $blog = Blog::findOrFail($id);
+
+        // // Prevent unauthorized users from editing
+        // if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
+        //     abort(403);
+        // }
+
+        // $request->validate([
+        //     'title'   => 'required',
+        //     'content' => 'required',
+        //     'image'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        // ]);
+
+        // $data = $request->only(['title', 'content']);
+
+        // // Handle image upload
+        // if ($request->hasFile('image')) {
+        //     $imagePath     = $request->file('image')->store('blogs', 'public');
+        //     $data['image'] = $imagePath;
+        // }
+
+        // $blog->update($data);
+
+         $blog = Blog::findOrFail($id);
 
     if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
         abort(403);
@@ -154,17 +149,16 @@ class BlogController extends Controller
     $data = $request->only(['title', 'content']);
     $blog->update($data);
 
-    // Remove selected images
-    if ($request->has('remove_images')) {
-        foreach ($request->remove_images as $imageId) {
-            $image = $blog->images()->find($imageId);
-            if ($image) {
-                \Storage::disk('public')->delete($image->image_path);
-                $image->delete();
-            }
-        }
-    }
-
+    // // Remove selected images
+    // if ($request->has('remove_images')) {
+    //     foreach ($request->remove_images as $imageId) {
+    //         $image = $blog->images()->find($imageId);
+    //         if ($image) {
+    //             \Storage::disk('public')->delete($image->image_path);
+    //             $image->delete();
+    //         }
+    //     }
+    // }
     // Add new images
     if ($request->hasFile('images')) {
         foreach ($request->file('images') as $image) {
@@ -172,10 +166,8 @@ class BlogController extends Controller
             $blog->images()->create(['image_path' => $path]);
         }
     }
-
-    return redirect()->route('blog.main_blog.index')->with('success', 'Blog updated!');
-}
-
+        return redirect()->route('blog.main_blog.index')->with('success', 'Blog updated successfully!');
+    }
 
     /**
      * Remove the specified resource from storage.

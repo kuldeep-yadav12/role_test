@@ -17,6 +17,7 @@
             width: 100%;
             height: 200px;
             object-fit: cover;
+           object-position: top;
             background: :transparent;
             overflow: hidden;
         }
@@ -32,7 +33,7 @@
 
         .swiper-button-next,
         .swiper-button-prev {
-            color: white;
+            color: red;
             width: 24px;
             height: 24px;
         }
@@ -99,5 +100,4 @@
     @include('layout.footer')
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 </html>
