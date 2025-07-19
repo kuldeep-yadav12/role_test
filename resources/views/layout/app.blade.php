@@ -56,10 +56,10 @@
 
     </div>
     @include('layout.footer')
-    <script src="/js/script.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="/js/script.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".swiper").forEach((swiperEl) => {
@@ -78,14 +78,14 @@
                 e.preventDefault();
                 e.stopPropagation();
 
-                let blogId = $(this).data('id');
-                let type = $(this).data('type');
+                const blogId = $(this).data('id');
+                const type = $(this).data('type');
+
                 $.ajax({
-                    url: '{{ route('
-                    like.toggle ') }}'
+                    url: "{{ route('like.toggle') }}"
                     , method: 'POST'
                     , data: {
-                        _token: '{{ csrf_token() }}'
+                        _token: "{{ csrf_token() }}"
                         , blog_id: blogId
                         , type: type
                     }
