@@ -81,8 +81,7 @@
                 let blogId = $(this).data('id');
                 let type = $(this).data('type');
                 $.ajax({
-                    url: '{{ route('
-                    like.toggle ') }}'
+                url: '{{ route('like.toggle') }}'
                     , method: 'POST'
                     , data: {
                         _token: '{{ csrf_token() }}'
