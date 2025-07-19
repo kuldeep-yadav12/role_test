@@ -2,19 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BlogController;
-use App\Http\Controllers\LikeController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CommentController;
-
-use App\Http\Controllers\Auth\LoginRegisterController;
-use App\Http\Controllers\BlogImageController;
 
 Route::get('/register', [UserController::class, 'index']);
 Route::post('/register', [UserController::class, 'store'])->name('user.store');
 
-Route::get('/login', [LoginRegisterController::class, 'showLogin'])->name('login');
-Route::post('/loginUser', [LoginRegisterController::class, 'login'])->name('login.submit');
-Route::post('/logout', [LoginRegisterController::class, 'logout'])->name('logout');
+Route::get('/login', [UserController::class, 'showLogin'])->name('login');
+Route::post('/loginUser', [UserController::class, 'login'])->name('login.submit');
+Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [UserController::class, 'home'])->name('home');

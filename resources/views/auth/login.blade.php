@@ -31,15 +31,6 @@
             <div class="col-9">
             <form action="{{ route('login.submit') }}" method="POST">
                 @csrf
-                {{-- <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror">
-                    <span class="text-danger">
-                        @error('email')
-                            {{ $message }}
-                        @enderror
-                    </span>
-                </div> --}}
                 <div class="mb-3">
                             <label class="form-label">Email or Username</label>
                             <input type="text" name="login" class="form-control @error('login') is-invalid @enderror" value="{{ old('login') }}">
