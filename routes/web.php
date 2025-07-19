@@ -2,19 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BlogController;
-use App\Http\Controllers\LikeController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CommentController;
-
-use App\Http\Controllers\Auth\LoginRegisterController;
-use App\Http\Controllers\BlogImageController;
 
 Route::get('/register', [UserController::class, 'index']);
 Route::post('/register', [UserController::class, 'store'])->name('user.store');
 
-Route::get('/login', [LoginRegisterController::class, 'showLogin'])->name('login');
-Route::post('/loginUser', [LoginRegisterController::class, 'login'])->name('login.submit');
-Route::post('/logout', [LoginRegisterController::class, 'logout'])->name('logout');
+Route::get('/login', [UserController::class, 'showLogin'])->name('login');
+Route::post('/loginUser', [UserController::class, 'login'])->name('login.submit');
+Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [UserController::class, 'home'])->name('home');
@@ -29,7 +25,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::put('/profile/update/{id}', [UserController::class, 'profile_update'])->name('profile.update');
-    Route::post('/like-toggle', [LikeController::class, 'toggleLikeDislike'])->name('like.toggle');
+    Route::post('/like-toggle', [BlogController::class, 'toggleLikeDislike'])->name('like.toggle');
 
 
     Route::get('/all-users', [UserController::class, 'listAll'])->name('user.list');
@@ -42,8 +38,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/users/bulk-soft-delete', [UserController::class, 'bulkSoftDelete'])->name('users.bulkSoftDelete');
 
     Route::post('/users/bulk-restore', [UserController::class, 'bulkRestore'])->name('users.bulkRestore');
-    Route::delete('/blog-images/{id}', [BlogImageController::class, 'deleteimg'])->name('blog_images.delete');
-   Route::post('/blog-images/reorder', [BlogImageController::class, 'reorder'])->name('blog_images.reorder');
+  Route::delete('/blog-images/{id}', [BlogController::class, 'deleteImage'])->name('blog_images.delete');
+Route::post('/blog-images/reorder', [BlogController::class, 'reorderImages'])->name('blog_images.reorder');
 });
 
 
