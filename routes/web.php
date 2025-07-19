@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::put('/profile/update/{id}', [UserController::class, 'profile_update'])->name('profile.update');
-    Route::post('/like-toggle', [LikeController::class, 'toggleLikeDislike'])->name('like.toggle');
+    Route::post('/like-toggle', [BlogController::class, 'toggleLikeDislike'])->name('like.toggle');
 
 
     Route::get('/all-users', [UserController::class, 'listAll'])->name('user.list');
@@ -44,8 +44,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/users/bulk-soft-delete', [UserController::class, 'bulkSoftDelete'])->name('users.bulkSoftDelete');
 
     Route::post('/users/bulk-restore', [UserController::class, 'bulkRestore'])->name('users.bulkRestore');
-    Route::delete('/blog-images/{id}', [BlogImageController::class, 'deleteimg'])->name('blog_images.delete');
-   Route::post('/blog-images/reorder', [BlogImageController::class, 'reorder'])->name('blog_images.reorder');
+  Route::delete('/blog-images/{id}', [BlogController::class, 'deleteImage'])->name('blog_images.delete');
+Route::post('/blog-images/reorder', [BlogController::class, 'reorderImages'])->name('blog_images.reorder');
 });
 
 
