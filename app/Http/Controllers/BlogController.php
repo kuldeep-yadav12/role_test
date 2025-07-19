@@ -1,16 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Blog;
-use Illuminate\Http\Request;
-use App\Models\Like;
 use App\Models\BlogImage;
+use App\Models\Like;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
@@ -52,7 +48,7 @@ class BlogController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = $request->only(['title', 'content']);
+        $data            = $request->only(['title', 'content']);
         $data['user_id'] = auth()->id();
 
         $blog = Blog::create($data);
@@ -158,12 +154,11 @@ class BlogController extends Controller
         return view('blogs.main_blogs.index', compact('blogs'));
     }
 
-
     public function toggleLikeDislike(Request $request)
     {
         $request->validate([
             'blog_id' => 'required|exists:blogs,id',
-            'type' => 'required|in:like,dislike',
+            'type'    => 'required|in:like,dislike',
         ]);
 
         $like = Like::where('user_id', Auth::id())
@@ -180,16 +175,16 @@ class BlogController extends Controller
             Like::create([
                 'user_id' => Auth::id(),
                 'blog_id' => $request->blog_id,
-                'type' => $request->type,
+                'type'    => $request->type,
             ]);
         }
 
-        $likes = Like::where('blog_id', $request->blog_id)->where('type', 'like')->count();
+        $likes    = Like::where('blog_id', $request->blog_id)->where('type', 'like')->count();
         $dislikes = Like::where('blog_id', $request->blog_id)->where('type', 'dislike')->count();
 
         return response()->json([
-            'likes' => $likes,
-            'dislikes' => $dislikes
+            'likes'    => $likes,
+            'dislikes' => $dislikes,
         ]);
     }
 
