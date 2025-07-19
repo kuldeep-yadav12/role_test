@@ -76,7 +76,12 @@ class CommentController extends Controller
         $comment->body = $request->body;
         $comment->save();
 
-        return redirect()->back()->with('success', 'Comment updated successfully!');
+        return response()->json([
+            'success'   => true,
+            'body'      => $comment->body,
+            'user_name' => $comment->user->name,
+            'message'   => 'Comment updated successfully!',
+        ]);
     }
 
 }

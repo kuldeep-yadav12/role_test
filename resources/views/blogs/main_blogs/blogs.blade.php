@@ -58,27 +58,18 @@
                         <p><strong>{{ $comment->user->name ?? 'Unknown User' }}:</strong> {{ $comment->body }}</p>
 
                         <div class="d-flex align-items-center gap-2">
-                            {{-- ✅ Admin actions only --}}
-                            @if(auth()->user()->role === 'admin')
-                            {{-- 👍 Like --}}
+                            @if(auth()->user()->role === 'admin' || auth()->id() === $comment->user_id)
                             <button class="btn btn-sm btn-outline-success like-comment-btn" data-id="{{ $comment->id }}">
                                 <i class="fa-solid fa-thumbs-up"></i>
                                 <span id="like-count-{{ $comment->id }}">{{ $comment->likes }}</span>
                             </button>
 
-                            {{-- 🗑️ Delete --}}
-                            <button class="btn btn-sm btn-outline-danger delete-comment-btn" data-id="{{ $comment->id }}">
+                            <button class="btn btn-sm btn-outline-danger delete-comment-btn mx-2" data-id="{{ $comment->id }}">
                                 <i class="fa fa-trash"></i>
                             </button>
-                            @endif
 
-                            {{-- ✏️ User's own edit/delete --}}
-                            @if(auth()->id() === $comment->user_id)
                             <button class="btn btn-sm btn-outline-primary edit-comment-btn" data-id="{{ $comment->id }}">
                                 <i class="fa fa-pen"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger delete-comment-btn" data-id="{{ $comment->id }}">
-                                <i class="fa fa-trash"></i>
                             </button>
                             @endif
                         </div>
@@ -172,7 +163,8 @@
     // Edit Comment (Your own only)
     $(document).on('click', '.edit-comment-btn', function() {
         const commentId = $(this).data('id');
-        const currentBody = $(`#comment-${commentId} p`).text().trim().split(':')[1].trim();
+        const commentPara = $(`#comment-${commentId} p`);
+        const currentBody = commentPara.text().trim().split(':').slice(1).join(':').trim();
         const newBody = prompt('Edit your comment:', currentBody);
 
         if (newBody) {
@@ -183,8 +175,13 @@
                     _token: '{{ csrf_token() }}'
                     , body: newBody
                 }
-                , success: function() {
-                    $(`#comment-${commentId} p`).html(`<strong>{{ auth()->user()->name }}:</strong> ${newBody}`);
+                , success: function(res) {
+                    if (res.success) {
+                        commentPara.html(`<strong>${res.user_name}:</strong> ${res.body}`);
+                    }
+                }
+                , error: function(xhr) {
+                    alert(xhr.responseJSON.message || 'Something went wrong');
                 }
             });
         }
