@@ -33,13 +33,13 @@ class CommentController extends Controller
     public function like(Comment $comment)
     {
         if (auth()->user()->role !== 'admin') {
-            return response()->json(['error' => 'Unauthorized'], 403);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $comment->likes += 1;
         $comment->save();
 
-        return response()->json(['success' => true, 'likes' => $comment->likes]);
+        return response()->json(['likes' => $comment->likes]);
     }
 
     public function destroy(Comment $comment)
@@ -59,14 +59,12 @@ class CommentController extends Controller
 
         return view('comments.edit', compact('comment'));
     }
-
     public function update(Request $request, $id)
     {
         $comment = Comment::findOrFail($id);
 
-        // Authorization (only owner can edit)
         if (auth()->id() !== $comment->user_id) {
-            abort(403, 'Unauthorized');
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $request->validate([
@@ -78,9 +76,8 @@ class CommentController extends Controller
 
         return response()->json([
             'success'   => true,
+            'user_name' => auth()->user()->name,
             'body'      => $comment->body,
-            'user_name' => $comment->user->name,
-            'message'   => 'Comment updated successfully!',
         ]);
     }
 

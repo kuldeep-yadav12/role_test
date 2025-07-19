@@ -18,12 +18,10 @@ Route::post('/logout', [LoginRegisterController::class, 'logout'])->name('logout
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [UserController::class, 'home'])->name('home');
-
     Route::get('/all-users', [UserController::class, 'listAll'])->name('user.list');
     Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
-
     Route::resource('blogs/main_blog', BlogController::class)->names('blog.main_blog');
     Route::prefix('blogs')->name('blog.')->group(function () {
         Route::resource('main_blog', BlogController::class);
@@ -49,20 +47,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-// Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('comments.like');
-
-// Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
-
-
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/comment/{id}', [CommentController::class, 'show'])->name('comments.show');
     Route::post('/comment/store', [CommentController::class, 'store'])->name('comments.store');
-    // Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('comments.like');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::get('/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
-    // Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
     Route::put('/comments/{id}', [CommentController::class, 'update'])->name('comments.update');
 
 });
