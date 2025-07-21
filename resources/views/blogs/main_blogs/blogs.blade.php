@@ -92,19 +92,21 @@
             </div>
 
 
-            @php
-            $userLike = $blog->likes->where('user_id', auth()->id())->first();
-            $likesCount = $blog->likes->where('type', 'like')->count();
-            $dislikesCount = $blog->likes->where('type', 'dislike')->count();
-            @endphp
-            <!-- Likes, Edit, Delete -->
-            <div class="card-footer d-flex justify-content-between align-items-center">
-                <button class="btn btn-success like-btn" data-id="{{ $blog->id }}" data-type="like">
-                    <i class="fa-solid fa-thumbs-up"></i> <span id="like-count-{{ $blog->id }}">{{ $likesCount }}</span>
-                </button>
-                <button class="btn btn-danger dislike-btn" data-id="{{ $blog->id }}" data-type="dislike">
-                    <i class="fa-solid fa-thumbs-down"></i> <span id="dislike-count-{{ $blog->id }}">{{ $dislikesCount }}</span>
-                </button>
+                    @php
+                        $userLike = $blog->likes->where('user_id', auth()->id())->first();
+                        $likesCount = $blog->likes->where('type', 'like')->count();
+                        $dislikesCount = $blog->likes->where('type', 'dislike')->count();
+                    @endphp
+                    <!-- Likes, Edit, Delete -->
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <button class="btn btn-success like-btn" data-id="{{ $blog->id }}" data-type="like">
+                            <i class="fa-solid fa-thumbs-up"></i> <span
+                                id="like-count-{{ $blog->id }}">{{ $likesCount }}</span>
+                        </button>
+                        <button class="btn btn-danger dislike-btn" data-id="{{ $blog->id }}" data-type="dislike">
+                            <i class="fa-solid fa-thumbs-down"></i> <span
+                                id="dislike-count-{{ $blog->id }}">{{ $dislikesCount }}</span>
+                        </button>
 
                 @if (!($isTrash ?? false) && (Auth::user()->role === 'admin' || $blog->user_id === Auth::user()->id))
                 <a href="{{ route('blog.main_blog.edit', $blog->id) }}" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
@@ -131,80 +133,78 @@
 
             </div>
 
-        </div>
+                </div>
+            </div>
+        @endforeach
     </div>
-    @endforeach
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.toggle-comments').forEach(button => {
-            button.addEventListener('click', function() {
-                const blogId = this.getAttribute('data-id');
-                const commentBox = document.getElementById('comments-' + blogId);
-                commentBox.style.display = commentBox.style.display === 'none' ? 'block' :
-                    'none';
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.toggle-comments').forEach(button => {
+                button.addEventListener('click', function() {
+                    const blogId = this.getAttribute('data-id');
+                    const commentBox = document.getElementById('comments-' + blogId);
+                    commentBox.style.display = commentBox.style.display === 'none' ? 'block' :
+                        'none';
+                });
             });
         });
-    });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Like Comment (Admin only)
+        $(document).on('click', '.like-comment-btn', function() {
+            const commentId = $(this).data('id');
+            $.post(`/comments/${commentId}/like`, {
+                _token: '{{ csrf_token() }}'
+            }, function(res) {
+                $(`#like-count-${commentId}`).text(res.likes);
+            });
+        });
 
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    // Like Comment (Admin only)
-    // $(document).on('click', '.like-comment-btn', function() {
-    //     const commentId = $(this).data('id');
-    //     $.post(`/comments/${commentId}/like`, {
-    //         _token: '{{ csrf_token() }}'
-    //     }, function(res) {
-    //         $(`#like-count-${commentId}`).text(res.likes);
-    //     });
-    // });
+        // Delete Comment
+        $(document).on('click', '.delete-comment-btn', function() {
+            const commentId = $(this).data('id');
+            if (confirm('Are you sure you want to delete this comment?')) {
+                $.ajax({
+                    url: `/comments/${commentId}`,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function() {
+                        $(`#comment-${commentId}`).remove();
+                    }
+                });
+            }
+        });
 
-    // // Delete Comment
-    // $(document).on('click', '.delete-comment-btn', function() {
-    //     const commentId = $(this).data('id');
-    //     if (confirm('Are you sure you want to delete this comment?')) {
-    //         $.ajax({
-    //             url: `/comments/${commentId}`,
-    //             type: 'DELETE',
-    //             data: {
-    //                 _token: '{{ csrf_token() }}'
-    //             },
-    //             success: function() {
-    //                 $(`#comment-${commentId}`).remove();
-    //             }
-    //         });
-    //     }
-    // });
+        // Edit Comment (Your own only)
+        $(document).on('click', '.edit-comment-btn', function() {
+            const commentId = $(this).data('id');
+            const commentPara = $(`#comment-${commentId} p`);
+            const currentBody = commentPara.text().trim().split(':').slice(1).join(':').trim();
+            const newBody = prompt('Edit your comment:', currentBody);
 
-    // // Edit Comment (Your own only)
-    // $(document).on('click', '.edit-comment-btn', function() {
-    //     const commentId = $(this).data('id');
-    //     const commentPara = $(`#comment-${commentId} p`);
-    //     const currentBody = commentPara.text().trim().split(':').slice(1).join(':').trim();
-    //     const newBody = prompt('Edit your comment:', currentBody);
-
-    //     if (newBody) {
-    //         $.ajax({
-    //             url: `/comments/${commentId}`,
-    //             type: 'PUT',
-    //             data: {
-    //                 _token: '{{ csrf_token() }}',
-    //                 body: newBody
-    //             },
-    //             success: function(res) {
-    //                 if (res.success) {
-    //                     commentPara.html(`<strong>${res.user_name}:</strong> ${res.body}`);
-    //                 }
-    //             },
-    //             error: function(xhr) {
-    //                 alert(xhr.responseJSON.message || 'Something went wrong');
-    //             }
-    //         });
-    //     }
-    // });
-
-</script>
+            if (newBody) {
+                $.ajax({
+                    url: `/comments/${commentId}`,
+                    type: 'PUT',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        body: newBody
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            commentPara.html(`<strong>${res.user_name}:</strong> ${res.body}`);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.message || 'Something went wrong');
+                    }
+                });
+            }
+        });
+    </script>
 
 
 
