@@ -206,11 +206,13 @@ class BlogController extends Controller
     };
 
     // live blogs
-    $blogs = Blog::query();          $applyFilters($blogs);
+    $blogs = Blog::query();          
+    $applyFilters($blogs);
     $blogs = $blogs->latest()->paginate(3, ['*'], 'all_page');
 
     // trashed blogs
-    $trashedQuery = Blog::onlyTrashed();  $applyFilters($trashedQuery);
+    $trashedQuery = Blog::onlyTrashed();  
+    $applyFilters($trashedQuery);
     $trashedBlogs = $trashedQuery->latest()->paginate(3, ['*'], 'trash_page');
 
     if ($request->ajax()) {
