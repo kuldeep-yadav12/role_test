@@ -32,14 +32,39 @@ class CommentController extends Controller
 
     public function like(Comment $comment)
     {
-        if (auth()->user()->role !== 'admin') {
+        $user = auth()->user();
+
+        if ($user->role !== 'admin') {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $comment->likes += 1;
-        $comment->save();
+        $existingLike = Like::where('user_id', $user->id)
+            ->where('blog_id', $comment->blog_id)
+            ->where('type', 'like')
+            ->first();
 
-        return response()->json(['likes' => $comment->likes]);
+        if ($existingLike) {
+            $existingLike->delete();
+        } else {
+            Like::create([
+                'user_id'    => auth()->id(),
+                'comment_id' => $comment->id,
+                'type'       => 'like',
+            ]);
+
+        }
+        dd([
+            'user_id'    => auth()->id(),
+            'blog_id'    => $comment->blog_id ?? null,
+            'comment_id' => $comment->id ?? null,
+        ]);
+
+        $likeCount = Like::where('blog_id', $comment->blog_id)
+            ->where('type', 'like')
+            ->count();
+
+        return response()->json(['likes' => $likeCount]);
+
     }
 
     public function destroy(Comment $comment)

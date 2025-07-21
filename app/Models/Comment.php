@@ -18,6 +18,12 @@ public function blog()
     return $this->belongsTo(Blog::class);
 }
 
+public function likes()
+{
+    return $this->hasMany(Like::class);
+}
+
+
 
 
 

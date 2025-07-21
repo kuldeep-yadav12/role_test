@@ -4,6 +4,12 @@ $.ajaxSetup({
     }
 });
 
+// comment form disable submit btn
+function disableButton() {
+    document.getElementById('comment-btn').disabled = true;
+    document.getElementById('comment-btn').innerText = 'Submitting...';
+}
+
 
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.toggle-comments').forEach(button => {
