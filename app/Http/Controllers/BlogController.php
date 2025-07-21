@@ -191,6 +191,9 @@ class BlogController extends Controller
             'isTrash' => $activeTab==='trash'
         ])->render();
     }
+
+    return view('blogs.main_blogs.index',
+                compact('blogs','trashedBlogs','activeTab'));
 }
 
     public function toggleLikeDislike(Request $request)
