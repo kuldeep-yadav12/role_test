@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Storage;
 use App\Models\Blog;
-use Illuminate\Http\Request;
-use App\Models\Like;
 use App\Models\BlogImage;
+use App\Models\Like;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
@@ -74,12 +73,12 @@ class BlogController extends Controller
     {
 
         $request->validate([
-            'title' => 'required',
-            'content' => 'required',
+            'title'    => 'required',
+            'content'  => 'required',
             'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = $request->only(['title', 'content']);
+        $data            = $request->only(['title', 'content']);
         $data['user_id'] = auth()->id();
 
         $blog = Blog::create($data);
@@ -93,7 +92,6 @@ class BlogController extends Controller
 
         return redirect()->route('blog.main_blog.index')->with('success', 'Blog created!');
     }
-
 
     /**
      * Display the specified resource.
@@ -126,6 +124,7 @@ class BlogController extends Controller
      */
     public function update(Request $request, string $id)
     {
+
         $blog = Blog::findOrFail($id);
 
         if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
@@ -133,16 +132,15 @@ class BlogController extends Controller
         }
 
         $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'remove_images' => 'array'
+            'title'         => 'required',
+            'content'       => 'required',
+            'images.*'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'remove_images' => 'array',
         ]);
 
         $data = $request->only(['title', 'content']);
         $blog->update($data);
 
-        // Add new images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('blogs', 'public');
@@ -193,18 +191,13 @@ class BlogController extends Controller
             'isTrash' => $activeTab==='trash'
         ])->render();
     }
-
-    return view('blogs.main_blogs.index',
-                compact('blogs','trashedBlogs','activeTab'));
 }
-
-
 
     public function toggleLikeDislike(Request $request)
     {
         $request->validate([
             'blog_id' => 'required|exists:blogs,id',
-            'type' => 'required|in:like,dislike',
+            'type'    => 'required|in:like,dislike',
         ]);
 
         $like = Like::where('user_id', Auth::id())
@@ -221,16 +214,16 @@ class BlogController extends Controller
             Like::create([
                 'user_id' => Auth::id(),
                 'blog_id' => $request->blog_id,
-                'type' => $request->type,
+                'type'    => $request->type,
             ]);
         }
 
-        $likes = Like::where('blog_id', $request->blog_id)->where('type', 'like')->count();
+        $likes    = Like::where('blog_id', $request->blog_id)->where('type', 'like')->count();
         $dislikes = Like::where('blog_id', $request->blog_id)->where('type', 'dislike')->count();
 
         return response()->json([
-            'likes' => $likes,
-            'dislikes' => $dislikes
+            'likes'    => $likes,
+            'dislikes' => $dislikes,
         ]);
     }
 
