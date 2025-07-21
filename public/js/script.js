@@ -110,7 +110,7 @@ $(document).ready(function () {
     });
 });
 
-$('.delete-image').on('click', function (e) {
+$('.delete-media').on('click', function (e) {
     e.preventDefault();
 
     if (!confirm('Are you sure you want to delete this image?')) return;
@@ -136,14 +136,14 @@ $('.delete-image').on('click', function (e) {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    const el = document.getElementById('image-gallery');
+    const el = document.getElementById('media-gallery');
     const reorderUrl = el.dataset.url;
 
     new Sortable(el, {
         animation: 150,
         onEnd: function () {
             let order = [];
-            document.querySelectorAll('.image-box').forEach((item, index) => {
+            document.querySelectorAll('.media-box').forEach((item, index) => {
                 order.push({
                     id: item.getAttribute('data-id'),
                     position: index + 1
@@ -160,18 +160,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: JSON.stringify({ order: order })
             })
-                .then(response => response.json())
+                .then(res => res.json())
                 .then(data => {
-                    if (data.success) {
-                        console.log('Order updated');
-                    } else {
-                        alert('Failed to reorder images');
-                    }
+                    if (data.success) console.log('Order updated');
+                    else alert('Failed to update');
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error while reordering');
-                });
+                .catch(err => alert('Reorder error'));
         }
     });
 });

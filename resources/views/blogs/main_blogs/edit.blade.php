@@ -24,26 +24,37 @@
                     </div>
 
 
-                    <div class="mb-3">
-                        <label>Existing Images</label>
-                        <div class="row" id="image-gallery" data-url="{{ route('blog_images.reorder', $blog->id) }}">
-                            @foreach ($blog->images as $image)
-                                <div class="col-md-3 mb-3 image-box" data-id="{{ $image->id }}"
-                                    id="image-{{ $image->id }}">
-                                    <p>Image #{{ $loop->iteration }}</p>
-                                    <img src="{{ asset('storage/' . $image->image_path) }}"
-                                        style="width:100%; height:150px; object-fit:cover;">
-                                    <a href="{{ route('blog_images.delete', $image->id) }}"
-                                        class="btn btn-danger btn-sm mt-2 delete-image" data-id="{{ $image->id }}"><i
-                                            class="fa fa-trash"></i></a>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
+                      <div class="mb-3">
+    <label>Existing Media (Images & Videos)</label>
+    <div class="row" id="media-gallery" data-url="{{ route('blog_media.reorder', $blog->id) }}">
+        @foreach ($blog->media as $media)
+            <div class="col-md-3 mb-3 media-box" data-id="{{ $media->id }}" id="media-{{ $media->id }}">
+                <p>Media #{{ $loop->iteration }}</p>
+
+                @if ($media->type === 'image')
+                    <img src="{{ asset('storage/' . $media->file_path) }}"
+                        style="width:100%; height:150px; object-fit:cover;">
+                @elseif ($media->type === 'video')
+                    <video width="100%" height="150" controls style="object-fit:cover;">
+                        <source src="{{ asset('storage/' . $media->file_path) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                @endif
+
+                <a href="{{ route('blog_media.delete', $media->id) }}"
+                    class="btn btn-danger btn-sm mt-2 delete-media" data-id="{{ $media->id }}">
+                    <i class="fa fa-trash"></i>
+                </a>
+            </div>
+        @endforeach
+    </div>
+</div>
 
                     <div class="mb-3">
-                        <label for="images" class="form-label">Add New Images</label>
-                        <input type="file" name="images[]" class="form-control" multiple>
+                         <label>Add Media (images/videos)</label>
+                        <input type="file" name="media[]" multiple accept="image/*,video/*">
+                        {{-- <label for="images" class="form-label">Add New Images</label>
+                        <input type="file" name="images[]" class="form-control" multiple> --}}
                     </div>
 
                     <!-- Submit -->

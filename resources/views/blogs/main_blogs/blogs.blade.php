@@ -36,6 +36,18 @@
                     @else
                     <img src="{{ asset('images/no-image.avif') }}" class="card-img-top rounded-circle mr-3" style="width: 40px; height: 40px; object-fit: cover; " alt="No Image">
                     @endif
+                </div>
+            @endforeach
+        </div>
+        @if ($blog->media->count() > 1)
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        @endif
+    </div>
+@else
+    <img src="{{ asset('images/no-image.avif') }}" class="card-img-top"
+         style="object-fit: cover; height: 200px;" alt="No Image">
+@endif
 
                     <div>
                         <div><strong>{{ $blog->user->name }}</strong></div>
