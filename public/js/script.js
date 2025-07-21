@@ -82,27 +82,30 @@ $(document).ready(function () {
         e.preventDefault();
         e.stopPropagation();
 
-        const blogId = $(this).data('id');
-        const type = $(this).data('type');
+        const $btn = $(this);
+        const blogId = $btn.data('id');
+        const type = $btn.data('type');
 
         $.ajax({
             url: '/like-toggle',
-            method: 'POST'
-            , data: {
-                blog_id: blogId
-                , type: type
-            }
-            , success: function (data) {
-                $('#like-count-' + blogId).text(data.likes);
-                $('#dislike-count-' + blogId).text(data.dislikes);
-            }
-            , error: function (xhr) {
+            method: 'POST',
+            data: {
+                blog_id: blogId,
+                type: type
+            },
+            success: function (data) {
+                const $wrapper = $btn.closest('.card'); 
+                $wrapper.find('.like-count').text(data.likes);
+                $wrapper.find('.dislike-count').text(data.dislikes);
+            },
+            error: function (xhr) {
                 alert('You must be logged in or something went wrong.');
                 console.log(xhr.responseText);
             }
         });
     });
 });
+
 
 $('.delete-image').on('click', function (e) {
     e.preventDefault();
