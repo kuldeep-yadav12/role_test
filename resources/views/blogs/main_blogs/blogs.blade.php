@@ -25,7 +25,38 @@
                     @else
                         <img src="{{ asset('images/no-image.png') }}" class="card-img-top"
                             style="object-fit: cover; height: 200px;" alt="No Image">
+                    @endif 
+{{-- 
+@php $str = \Illuminate\Support\Str::class; @endphp
+
+@if ($blog->images->count())
+    <div class="swiper blog-swiper-{{ $blog->id }}">
+        <div class="swiper-wrapper">
+            @foreach ($blog->images as $media)
+                <div class="swiper-slide">
+                    @if (Str::startsWith($media->media_type, 'image/'))
+                        <img src="{{ asset('storage/' . $media->image_path) }}"
+                             class="card-img-top"
+                             style="object-fit: cover; height: 200px;"
+                             alt="Blog Image">
+                    @elseif (Str::startsWith($media->media_type, 'video/') || Str::contains($media->image_path, '.mp4'))
+                        <video controls width="100%" height="200">
+                            <source src="{{ asset('storage/' . $media->image_path) }}"
+                                    type="{{ $media->media_type }}">
+                            Your browser does not support the video tag.
+                        </video>
+                    @else
+                        <p>Unsupported media</p>
                     @endif
+                </div>
+            @endforeach
+        </div>
+        @if ($blog->images->count() > 1)
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        @endif
+    </div>
+@endif --}}
 
                     <div class="card-body">
                         {{-- User Info --}}
