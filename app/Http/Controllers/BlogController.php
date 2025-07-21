@@ -6,6 +6,7 @@ use App\Models\BlogImage;
 use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
@@ -93,7 +94,33 @@ class BlogController extends Controller
 
         return redirect()->route('blog.main_blog.index')->with('success', 'Blog created!');
     }
+// public function store(Request $request)
+// {
 
+    
+//     $request->validate([
+//         'title'   => 'required',
+//         'content' => 'required',
+//         'media.*' => 'mimes:jpeg,jpg,png,mp4,webm|max:10240',
+//     ]);
+
+//     $data = $request->only(['title', 'content']);
+//     $data['user_id'] = auth()->id();
+//     $blog = Blog::create($data);
+
+//     if ($request->hasFile('media')) {
+//         foreach ($request->file('media') as $file) {
+//             $path = $file->store('blogs', 'public');
+//            $blog->images()->create([
+//     'image_path' => $path,
+//     'media_type' => $file->getClientMimeType(), 
+// ]);
+//         }
+//         // dd($file->getMimeType());
+//     }
+
+//     return redirect()->route('blog.main_blog.index')->with('success', 'Blog created!');
+// }
     /**
      * Display the specified resource.
      */

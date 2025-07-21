@@ -29,8 +29,8 @@
 
         <div class="mb-3">
             <label for="images" class="form-label">Upload Image</label>
-            {{-- <input type="file" name="image" class="form-control"> --}}
-             <input type="file" name="images[]" multiple class="form-control" />
+             {{-- <input type="file" name="images[]" multiple class="form-control" /> --}}
+             <input type="file" name="media[]" multiple accept="image/*,video/mp4,video/webm">
 
         </div>
         

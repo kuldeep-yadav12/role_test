@@ -25,7 +25,7 @@
                             @endif
                         </div>
                     @else
-                        <img src="{{ asset('images/no-image.png') }}" class="card-img-top"
+                        <img src="{{ asset('images/no-image.avif') }}" class="card-img-top"
                             style="object-fit: cover; height: 200px;" alt="No Image">
                     @endif
 
@@ -38,9 +38,8 @@
                                         class="rounded-circle mr-3"
                                         style="width: 40px; height: 40px; object-fit: cover;">
                                 @else
-                                    <img src="{{ asset('default-avatar.png') }}" alt="Default Image"
-                                        class="rounded-circle me-2"
-                                        style="width: 40px; height: 40px; object-fit: cover;">
+                                    <img src="{{ asset('images/no-image.avif') }}" class="card-img-top rounded-circle mr-3"
+                                        style="width: 40px; height: 40px; object-fit: cover; " alt="No Image">
                                 @endif
 
                                 <div>
@@ -108,7 +107,7 @@
                     @endphp
                     <!-- Likes, Edit, Delete -->
                     <div class="card-footer d-flex justify-content-between align-items-center">
-                      <button class="btn btn-success like-btn" data-id="{{ $blog->id }}" data-type="like">
+                        <button class="btn btn-success like-btn" data-id="{{ $blog->id }}" data-type="like">
                             <i class="fa-solid fa-thumbs-up"></i> <span class="like-count">{{ $likesCount }}</span>
                         </button>
                         <button class="btn btn-danger dislike-btn" data-id="{{ $blog->id }}" data-type="dislike">
@@ -149,7 +148,7 @@
         @endforeach
     </div>
 
-   <div class="mt-4 d-flex justify-content-center">
-    {{ $blogs->appends(['tab' => isset($isTrash) && $isTrash ? 'trash' : 'all'])->links('pagination::simple-bootstrap-5') }}
-</div>
+    <div class="mt-4 d-flex justify-content-center">
+        {{ $blogs->appends(['tab' => isset($isTrash) && $isTrash ? 'trash' : 'all'])->links('pagination::simple-bootstrap-5') }}
+    </div>
 @endif
