@@ -38,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/users/bulk-soft-delete', [UserController::class, 'bulkSoftDelete'])->name('users.bulkSoftDelete');
 
     Route::post('/users/bulk-restore', [UserController::class, 'bulkRestore'])->name('users.bulkRestore');
-  Route::delete('/blog-images/{id}', [BlogController::class, 'deleteImage'])->name('blog_images.delete');
+     Route::delete('/blog-images/{id}', [BlogController::class, 'deleteImage'])->name('blog_images.delete');
 Route::post('/blog-images/reorder', [BlogController::class, 'reorderImages'])->name('blog_images.reorder');
 });
 
