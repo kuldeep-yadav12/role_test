@@ -7,6 +7,7 @@ use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 class BlogController extends Controller
 {
@@ -257,19 +258,25 @@ class BlogController extends Controller
     }
 
 
-    public function restore($id)
-    {
-        $blog = Blog::onlyTrashed()->findOrFail($id);
+ public function restore($id)
+{
+    $blog = Blog::onlyTrashed()->findOrFail($id);
 
-        // Check if user is authorized (admin or blog owner)
-        if (Auth::user()->role === 'admin' || Auth::id() === $blog->user_id) {
-            $blog->restore();
-            return redirect()->route('blog.main_blog.index', ['tab' => 'trash'])
-                           ->with('success', 'Blog restored successfully!');
-        } else {
-            return redirect()->back()->with('error', 'Unauthorized action.');
-        }
+    // Check if user exists
+    if (!User::where('id', $blog->user_id)->exists()) {
+        return redirect()->back()->with('error', 'Cannot restore. Blog owner does not exist.');
     }
+
+    // Check if user is authorized (admin or blog owner)
+    if (Auth::user()->role === 'admin' || Auth::id() === $blog->user_id) {
+        $blog->restore();
+        return redirect()->route('blog.main_blog.index', ['tab' => 'trash'])
+                         ->with('success', 'Blog restored successfully!');
+    } else {
+        return redirect()->back()->with('error', 'Unauthorized action.');
+    }
+}
+
 
     // Permanently delete a soft-deleted blog
     public function forceDelete($id)
