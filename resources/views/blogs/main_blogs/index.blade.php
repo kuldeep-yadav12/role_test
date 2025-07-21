@@ -2,9 +2,9 @@
 
 @section('contant')
     @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show justify-content-between d-flex w-100 px-4" role="alert">
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <a type="button" data-bs-dismiss="alert"><i class="fa fa-close"></i></a>
         </div>
     @endif
 
