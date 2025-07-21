@@ -8,26 +8,32 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
 
-                    {{-- Swiper or default image --}}
-                    @if ($blog->images->count())
-                        <div class="swiper blog-swiper-{{ $blog->id }}">
-                            <div class="swiper-wrapper">
-                                @foreach ($blog->images as $image)
-                                    <div class="swiper-slide">
-                                        <img src="{{ asset('storage/' . $image->image_path) }}" class="card-img-top"
-                                            style="object-fit: cover; height: 200px;" alt="Blog Image">
-                                    </div>
-                                @endforeach
-                            </div>
-                            @if ($blog->images->count() > 1)
-                                <div class="swiper-button-next"></div>
-                                <div class="swiper-button-prev"></div>
-                            @endif
-                        </div>
-                    @else
-                        <img src="{{ asset('images/no-image.avif') }}" class="card-img-top"
-                            style="object-fit: cover; height: 200px;" alt="No Image">
+@if ($blog->media->count())
+    <div class="swiper blog-swiper-{{ $blog->id }}">
+        <div class="swiper-wrapper">
+            @foreach ($blog->media as $item)
+                <div class="swiper-slide">
+                    @if ($item->type === 'image')
+                        <img src="{{ asset('storage/' . $item->file_path) }}" class="card-img-top"
+                             style="object-fit: cover; height: 200px;" alt="Image">
+                    @elseif ($item->type === 'video')
+                        <video controls style="width: 100%; height: 200px; object-fit: cover;">
+                            <source src="{{ asset('storage/' . $item->file_path) }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
                     @endif
+                </div>
+            @endforeach
+        </div>
+        @if ($blog->media->count() > 1)
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        @endif
+    </div>
+@else
+    <img src="{{ asset('images/no-image.avif') }}" class="card-img-top"
+         style="object-fit: cover; height: 200px;" alt="No Image">
+@endif
 
                     <div class="card-body">
                         {{-- User Info --}}

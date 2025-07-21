@@ -28,4 +28,10 @@ public function images()
     return $this->hasMany(BlogImage::class)->orderBy('sort_order');
 }
 
+public function media()
+{
+    return $this->hasMany(BlogMedia::class)->orderBy('sort_order');
+}
+
+
 }

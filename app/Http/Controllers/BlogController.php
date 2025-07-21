@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\BlogMedia;
 use App\Models\BlogImage;
 use App\Models\Like;
 use Illuminate\Http\Request;
@@ -70,56 +71,33 @@ class BlogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
+   
+       public function store(Request $request)
+{
+    $request->validate([
+        'title'    => 'required',
+        'content'  => 'required',
+        'media.*'  => 'file|mimes:jpeg,png,jpg,mp4,webm,ogg|max:51200', // 50MB
+    ]);
 
-        $request->validate([
-            'title'    => 'required',
-            'content'  => 'required',
-            'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+    $data = $request->only(['title', 'content']);
+    $data['user_id'] = auth()->id();
+    $blog = Blog::create($data);
 
-        $data            = $request->only(['title', 'content']);
-        $data['user_id'] = auth()->id();
-
-        $blog = Blog::create($data);
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('blogs', 'public');
-                $blog->images()->create(['image_path' => $path]);
-            }
+    if ($request->hasFile('media')) {
+        foreach ($request->file('media') as $file) {
+            $path = $file->store('blogs', 'public');
+            $type = str_starts_with($file->getMimeType(), 'video') ? 'video' : 'image';
+            $blog->media()->create([
+                'file_path' => $path,
+                'type'      => $type,
+            ]);
         }
-
-        return redirect()->route('blog.main_blog.index')->with('success', 'Blog created!');
     }
-// public function store(Request $request)
-// {
 
-    
-//     $request->validate([
-//         'title'   => 'required',
-//         'content' => 'required',
-//         'media.*' => 'mimes:jpeg,jpg,png,mp4,webm|max:10240',
-//     ]);
+    return redirect()->route('blog.main_blog.index')->with('success', 'Blog created!');
+}
 
-//     $data = $request->only(['title', 'content']);
-//     $data['user_id'] = auth()->id();
-//     $blog = Blog::create($data);
-
-//     if ($request->hasFile('media')) {
-//         foreach ($request->file('media') as $file) {
-//             $path = $file->store('blogs', 'public');
-//            $blog->images()->create([
-//     'image_path' => $path,
-//     'media_type' => $file->getClientMimeType(), 
-// ]);
-//         }
-//         // dd($file->getMimeType());
-//     }
-
-//     return redirect()->route('blog.main_blog.index')->with('success', 'Blog created!');
-// }
     /**
      * Display the specified resource.
      */
@@ -149,33 +127,40 @@ class BlogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
+    
+public function update(Request $request, Blog $blog,string $id)
+{
+     $blog = Blog::findOrFail($id);
 
-        $blog = Blog::findOrFail($id);
-
-        if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $request->validate([
-            'title'         => 'required',
-            'content'       => 'required',
-            'images.*'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'remove_images' => 'array',
-        ]);
-
-        $data = $request->only(['title', 'content']);
-        $blog->update($data);
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('blogs', 'public');
-                $blog->images()->create(['image_path' => $path]);
-            }
-        }
-        return redirect()->route('blog.main_blog.index')->with('success', 'Blog updated successfully!');
+    if (auth()->user()->role !== 'admin' && $blog->user_id !== auth()->id()) {
+        abort(403);
     }
+
+    $request->validate([
+        'title' => 'required',
+        'content' => 'required',
+        'media.*' => 'file|mimes:jpeg,png,jpg,mp4,webm,ogg|max:51200',
+    ]);
+
+    $blog->update([
+        'title' => $request->title,
+        'content' => $request->content,
+    ]);
+
+    // Upload new media
+    if ($request->hasFile('media')) {
+        foreach ($request->file('media') as $file) {
+            $path = $file->store('blogs', 'public');
+            $type = str_starts_with($file->getMimeType(), 'video') ? 'video' : 'image';
+            $blog->media()->create([
+                'file_path' => $path,
+                'type' => $type,
+            ]);
+        }
+    }
+
+    return redirect()->route('blog.main_blog.index')->with('success', 'Blog updated!');
+}
 
     /**
      * Remove the specified resource from storage.
@@ -259,25 +244,21 @@ class BlogController extends Controller
 
     public function deleteImage(Request $request, $id)
     {
-        $image = BlogImage::findOrFail($id);
+    $media = BlogMedia::findOrFail($id);
 
-        if (Storage::exists('public/' . $image->image_path)) {
-            Storage::delete('public/' . $image->image_path);
-        }
-
-        $image->delete();
-
-        if ($request->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Image deleted successfully.']);
-        }
-
-        return back()->with('success', 'Image deleted successfully.');
+    if (Storage::disk('public')->exists($media->file_path)) {
+        Storage::disk('public')->delete($media->file_path);
     }
+
+    $media->delete();
+
+    return response()->json(['success' => true, 'message' => 'Media deleted successfully.']);
+}
 
     public function reorderImages(Request $request)
     {
         foreach ($request->order as $position => $id) {
-            BlogImage::where('id', $id)->update(['sort_order' => $position]);
+            BlogMedia::where('id', $id)->update(['sort_order' => $position]);
         }
 
         return response()->json(['success' => true]);
