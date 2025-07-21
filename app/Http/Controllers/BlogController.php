@@ -13,21 +13,51 @@ class BlogController extends Controller
 {
 
     public function index(Request $request)
-    {
-        if (auth()->user()->role === 'admin') {
-            $blogs     = Blog::latest()->simplePaginate(3);
-            $postCount = Blog::count();
-        } else {
-            $blogs     = Blog::where('user_id', auth()->id())->latest()->simplePaginate(3);
-            $postCount = Blog::where('user_id', auth()->id())->count();
-        }
+{
+    
+    $activeTab = $request->get('tab', 'all');
 
-        if ($request->ajax()) {
-            return view('blogs.main_blogs.blogs', compact('blogs', 'postCount'))->render();
-        }
+    if (auth()->user()->role === 'admin') {
 
-        return view('blogs.main_blogs.index', compact('blogs', 'postCount'));
+        
+        $blogs = Blog::with(['user','comments.user','likes','images'])
+                     ->latest()
+                     ->paginate(3, ['*'], 'all_page');
+
+        
+        $trashedBlogs = Blog::onlyTrashed()
+                            ->with(['user','comments.user','likes','images'])
+                            ->latest()
+                            ->paginate(3, ['*'], 'trash_page');
+
+    } else {
+        $blogs = Blog::with(['user','comments.user','likes','images'])
+                     ->where('user_id', auth()->id())
+                     ->latest()
+                     ->paginate(3, ['*'], 'all_page');
+
+        $trashedBlogs = Blog::onlyTrashed()
+                            ->with(['user','comments.user','likes','images'])
+                            ->where('user_id', auth()->id())
+                            ->latest()
+                            ->paginate(3, ['*'], 'trash_page');
     }
+
+    if ($request->ajax()) {
+        return view(
+            'blogs.main_blogs.blogs',
+            ['blogs' => $activeTab === 'trash' ? $trashedBlogs : $blogs,
+             'isTrash' => $activeTab === 'trash']
+        )->render();
+        return $view;
+    }
+
+    return view('blogs.main_blogs.index',
+                compact('blogs','trashedBlogs','activeTab'));
+}
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -158,28 +188,40 @@ class BlogController extends Controller
     }
 
     public function blogFilter(Request $request)
-    {
-        $query = Blog::query();
+{
+    $activeTab = $request->get('tab', 'all');
 
+    // Common filter for both live & trash
+    $applyFilters = function ($query) use ($request) {
         if ($request->filled('title')) {
-            $query->where('title', 'like', '%' . $request->title . '%');
+            $query->where('title','like','%'.$request->title.'%');
         }
-
         if ($request->filled('start_date')) {
-            $query->whereDate('created_at', '>=', $request->start_date);
+            $query->whereDate('created_at','>=',$request->start_date);
         }
-
         if ($request->filled('end_date')) {
-            $query->whereDate('created_at', '<=', $request->end_date);
+            $query->whereDate('created_at','<=',$request->end_date);
         }
-        $blogs = $query->latest()->paginate(3);
+    };
 
-        if ($request->ajax()) {
-            return view('blogs.main_blogs.blogs', compact('blogs'))->render();
-        }
+    // live blogs
+    $blogs = Blog::query();          $applyFilters($blogs);
+    $blogs = $blogs->latest()->paginate(3, ['*'], 'all_page');
 
-        return view('blogs.main_blogs.index', compact('blogs'));
+    // trashed blogs
+    $trashedQuery = Blog::onlyTrashed();  $applyFilters($trashedQuery);
+    $trashedBlogs = $trashedQuery->latest()->paginate(3, ['*'], 'trash_page');
+
+    if ($request->ajax()) {
+        return view('blogs.main_blogs.blogs', [
+            'blogs'   => $activeTab==='trash' ? $trashedBlogs : $blogs,
+            'isTrash' => $activeTab==='trash'
+        ])->render();
     }
+
+    return view('blogs.main_blogs.index',
+                compact('blogs','trashedBlogs','activeTab'));
+}
 
     public function toggleLikeDislike(Request $request)
     {
@@ -239,5 +281,35 @@ class BlogController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+
+    public function restore($id)
+    {
+        $blog = Blog::onlyTrashed()->findOrFail($id);
+
+        // Check if user is authorized (admin or blog owner)
+        if (Auth::user()->role === 'admin' || Auth::id() === $blog->user_id) {
+            $blog->restore();
+            return redirect()->route('blog.main_blog.index', ['tab' => 'trash'])
+                           ->with('success', 'Blog restored successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Unauthorized action.');
+        }
+    }
+
+    // Permanently delete a soft-deleted blog
+    public function forceDelete($id)
+    {
+        $blog = Blog::onlyTrashed()->findOrFail($id);
+
+        // Check if user is authorized (admin or blog owner)
+        if (Auth::user()->role === 'admin' || Auth::id() === $blog->user_id) {
+            $blog->forceDelete();
+            return redirect()->route('blog.main_blog.index', ['tab' => 'trash'])
+                           ->with('success', 'Blog permanently deleted!');
+        } else {
+            return redirect()->back()->with('error', 'Unauthorized action.');
+        }
     }
 }

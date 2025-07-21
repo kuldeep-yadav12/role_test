@@ -9,14 +9,15 @@
     </li>
 </ul>
 
-<div class="tab-content" id="blog-tabContent">
+<div class="tab-content p-0" id="blog-tabContent">
     {{-- All Blogs Tab --}}
     <div class="tab-pane fade show active" id="all-blogs" role="tabpanel" aria-labelledby="all-blogs-tab">
-        All Blogs
+        @include('blogs.main_blogs.blogs', ['blogs' => $blogs, 'isTrash' => false])
     </div>
 
     {{-- Trash Blogs Tab --}}
     <div class="tab-pane fade" id="trash-blogs" role="tabpanel" aria-labelledby="trash-blogs-tab">
-        Trash Blogs
+       @include('blogs.main_blogs.blogs', ['blogs' => $trashedBlogs, 'isTrash' => true])
     </div>
+    
 </div>

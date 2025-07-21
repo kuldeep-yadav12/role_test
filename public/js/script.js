@@ -81,11 +81,9 @@ $(document).ready(function () {
     $(document).off('click', '.like-btn, .dislike-btn').on('click', '.like-btn, .dislike-btn', function (e) {
         e.preventDefault();
         e.stopPropagation();
-
         const $btn = $(this);
         const blogId = $btn.data('id');
         const type = $btn.data('type');
-
         $.ajax({
             url: '/like-toggle',
             method: 'POST',
@@ -94,7 +92,7 @@ $(document).ready(function () {
                 type: type
             },
             success: function (data) {
-                const $wrapper = $btn.closest('.card'); 
+                const $wrapper = $btn.closest('.card');
                 $wrapper.find('.like-count').text(data.likes);
                 $wrapper.find('.dislike-count').text(data.dislikes);
             },
@@ -105,7 +103,6 @@ $(document).ready(function () {
         });
     });
 });
-
 
 $('.delete-image').on('click', function (e) {
     e.preventDefault();

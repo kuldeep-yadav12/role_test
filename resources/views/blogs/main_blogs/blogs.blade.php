@@ -1,133 +1,96 @@
 @if ($blogs->isEmpty())
-    <div class="alert alert-info">No blogs available yet.</div>
+<div class="alert alert-info">
+    {{ $isTrash ?? false ? 'No trashed blogs available.' : 'No blogs available yet.' }}
+</div>
 @else
-    <div class="row">
-        @foreach ($blogs as $blog)
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
+<div class="row">
+    @foreach ($blogs as $blog)
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
 
-                    {{-- Swiper or default image --}}
-                    @if ($blog->images->count())
-                        <div class="swiper blog-swiper-{{ $blog->id }}">
-                            <div class="swiper-wrapper">
-                                @foreach ($blog->images as $image)
-                                    <div class="swiper-slide">
-                                        <img src="{{ asset('storage/' . $image->image_path) }}" class="card-img-top"
-                                            style="object-fit: cover; height: 200px;" alt="Blog Image">
-                                    </div>
-                                @endforeach
-                            </div>
-                            @if ($blog->images->count() > 1)
-                                <div class="swiper-button-next"></div>
-                                <div class="swiper-button-prev"></div>
-                            @endif
-                        </div>
+            {{-- Swiper or default image --}}
+            @if ($blog->images->count())
+            <div class="swiper blog-swiper-{{ $blog->id }}">
+                <div class="swiper-wrapper">
+                    @foreach ($blog->images as $image)
+                    <div class="swiper-slide">
+                        <img src="{{ asset('storage/' . $image->image_path) }}" class="card-img-top" style="object-fit: cover; height: 200px;" alt="Blog Image">
+                    </div>
+                    @endforeach
+                </div>
+                @if ($blog->images->count() > 1)
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                @endif
+            </div>
+            @else
+            <img src="{{ asset('images/no-image.png') }}" class="card-img-top" style="object-fit: cover; height: 200px;" alt="No Image">
+            @endif
+
+            <div class="card-body">
+                {{-- User Info --}}
+                @if ($blog->user)
+                <div class="d-flex align-items-center mb-3">
+                    @if ($blog->user->image)
+                    <img src="{{ asset('storage/' . $blog->user->image) }}" alt="User Image" class="rounded-circle mr-3" style="width: 40px; height: 40px; object-fit: cover;">
                     @else
                         <img src="{{ asset('images/no-image.png') }}" class="card-img-top"
                             style="object-fit: cover; height: 200px;" alt="No Image">
                     @endif 
-{{-- 
-@php $str = \Illuminate\Support\Str::class; @endphp
 
-@if ($blog->images->count())
-    <div class="swiper blog-swiper-{{ $blog->id }}">
-        <div class="swiper-wrapper">
-            @foreach ($blog->images as $media)
-                <div class="swiper-slide">
-                    @if (Str::startsWith($media->media_type, 'image/'))
-                        <img src="{{ asset('storage/' . $media->image_path) }}"
-                             class="card-img-top"
-                             style="object-fit: cover; height: 200px;"
-                             alt="Blog Image">
-                    @elseif (Str::startsWith($media->media_type, 'video/') || Str::contains($media->image_path, '.mp4'))
-                        <video controls width="100%" height="200">
-                            <source src="{{ asset('storage/' . $media->image_path) }}"
-                                    type="{{ $media->media_type }}">
-                            Your browser does not support the video tag.
-                        </video>
-                    @else
-                        <p>Unsupported media</p>
-                    @endif
+                    <div>
+                        <div><strong>{{ $blog->user->name }}</strong></div>
+                        <small class="text-muted">{{ $blog->user->email }}</small>
+                    </div>
                 </div>
-            @endforeach
-        </div>
-        @if ($blog->images->count() > 1)
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-        @endif
-    </div>
-@endif --}}
+                @else
+                <div class="mb-3 text-muted">Unknown Author</div>
+                @endif
 
-                    <div class="card-body">
-                        {{-- User Info --}}
-                        @if ($blog->user)
-                            <div class="d-flex align-items-center mb-3">
-                                @if ($blog->user->image)
-                                    <img src="{{ asset('storage/' . $blog->user->image) }}" alt="User Image"
-                                        class="rounded-circle mr-3"
-                                        style="width: 40px; height: 40px; object-fit: cover;">
-                                @else
-                                    <img src="{{ asset('default-avatar.png') }}" alt="Default Image"
-                                        class="rounded-circle me-2"
-                                        style="width: 40px; height: 40px; object-fit: cover;">
-                                @endif
+                <h5 class="card-title">{{ $blog->title }}</h5>
+                <p class="card-text">{{ Str::limit($blog->content, 150) }}</p>
 
-                                <div>
-                                    <div><strong>{{ $blog->user->name }}</strong></div>
-                                    <small class="text-muted">{{ $blog->user->email }}</small>
-                                </div>
-                            </div>
-                        @else
-                            <div class="mb-3 text-muted">Unknown Author</div>
-                        @endif
+                <!-- Comment Toggle -->
+                <button type="button" class="btn btn-warning toggle-comments" data-id="{{ $blog->id }}">
+                    <i class="fa-solid fa-comment"></i> {{ $blog->comments->count() }}
+                </button>
 
-                        <h5 class="card-title">{{ $blog->title }}</h5>
-                        <p class="card-text">{{ Str::limit($blog->content, 150) }}</p>
+                <div class="comment-section mt-2" id="comments-{{ $blog->id }}" style="display: none;">
+                    @foreach ($blog->comments as $comment)
+                    <div class="mb-2 border-bottom pb-2 comment-row" id="comment-{{ $comment->id }}">
+                        <p><strong>{{ $comment->user->name ?? 'Unknown User' }}:</strong>
+                            {{ $comment->body }}</p>
 
-                        <!-- Comment Toggle -->
-                        <button type="button" class="btn btn-warning toggle-comments" data-id="{{ $blog->id }}">
-                            <i class="fa-solid fa-comment"></i> {{ $blog->comments->count() }}
-                        </button>
+                        <div class="d-flex align-items-center gap-2">
+                            @if (auth()->user()->role === 'admin' || auth()->id() === $comment->user_id)
+                            <button class="btn btn-sm btn-outline-success like-comment-btn" data-id="{{ $comment->id }}">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                                <span id="like-count-{{ $comment->id }}">{{ $comment->likes }}</span>
+                            </button>
 
-                        <div class="comment-section mt-2" id="comments-{{ $blog->id }}" style="display: none;">
-                            @foreach ($blog->comments as $comment)
-                                <div class="mb-2 border-bottom pb-2 comment-row" id="comment-{{ $comment->id }}">
-                                    <p><strong>{{ $comment->user->name ?? 'Unknown User' }}:</strong>
-                                        {{ $comment->body }}</p>
+                            <button class="btn btn-sm btn-outline-danger delete-comment-btn mx-2" data-id="{{ $comment->id }}">
+                                <i class="fa fa-trash"></i>
+                            </button>
 
-                                    <div class="d-flex align-items-center gap-2">
-                                        @if (auth()->user()->role === 'admin' || auth()->id() === $comment->user_id)
-                                            <button class="btn btn-sm btn-outline-success like-comment-btn"
-                                                data-id="{{ $comment->id }}">
-                                                <i class="fa-solid fa-thumbs-up"></i>
-                                                <span id="like-count-{{ $comment->id }}">{{ $comment->likes }}</span>
-                                            </button>
-
-                                            <button class="btn btn-sm btn-outline-danger delete-comment-btn mx-2"
-                                                data-id="{{ $comment->id }}">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-
-                                            <button class="btn btn-sm btn-outline-primary edit-comment-btn"
-                                                data-id="{{ $comment->id }}">
-                                                <i class="fa fa-pen"></i>
-                                            </button>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endforeach
-
-
-
-
-                            <form action="{{ route('comments.store') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="blog_id" value="{{ $blog->id }}">
-                                <textarea name="body" class="form-control mb-2" required></textarea>
-                                <button type="submit" class="btn btn-sm btn-primary">Comment</button>
-                            </form>
+                            <button class="btn btn-sm btn-outline-primary edit-comment-btn" data-id="{{ $comment->id }}">
+                                <i class="fa fa-pen"></i>
+                            </button>
+                            @endif
                         </div>
                     </div>
+                    @endforeach
+
+
+
+
+                    <form action="{{ route('comments.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="blog_id" value="{{ $blog->id }}">
+                        <textarea name="body" class="form-control mb-2" required></textarea>
+                        <button type="submit" class="btn btn-sm btn-primary">Comment</button>
+                    </form>
+                </div>
+            </div>
 
 
                     @php
@@ -138,29 +101,115 @@
                     <!-- Likes, Edit, Delete -->
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <button class="btn btn-success like-btn" data-id="{{ $blog->id }}" data-type="like">
-                            <i class="fa-solid fa-thumbs-up"></i> <span class="like-count">{{ $likesCount }}</span>
+                            <i class="fa-solid fa-thumbs-up"></i> <span
+                                id="like-count-{{ $blog->id }}">{{ $likesCount }}</span>
                         </button>
                         <button class="btn btn-danger dislike-btn" data-id="{{ $blog->id }}" data-type="dislike">
                             <i class="fa-solid fa-thumbs-down"></i> <span
-                                class="dislike-count">{{ $dislikesCount }}</span>
+                                id="dislike-count-{{ $blog->id }}">{{ $dislikesCount }}</span>
                         </button>
 
-                        @if (Auth::user()->role === 'admin' || $blog->user_id === Auth::user()->id)
-                            <a href="{{ route('blog.main_blog.edit', $blog->id) }}" class="btn btn-primary"><i
-                                    class="fa-solid fa-pencil"></i></a>
-                            <form action="{{ route('blog.main_blog.destroy', $blog->id) }}" method="POST"
-                                onsubmit="return confirm('Are you sure?');">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
-                            </form>
-                        @endif
-                    </div>
+                @if (!($isTrash ?? false) && (Auth::user()->role === 'admin' || $blog->user_id === Auth::user()->id))
+                <a href="{{ route('blog.main_blog.edit', $blog->id) }}" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
+                <form action="{{ route('blog.main_blog.destroy', $blog->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                </form>
+                @endif
+                @if ($isTrash ?? false)
+                <form action="{{ route('blog.restore', $blog->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa-solid fa-rotate-left"></i> Restore
+                    </button>
+                </form>
+
+                <form action="{{ route('blog.forceDelete', $blog->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Permanently delete?')">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa-solid fa-trash"></i> Delete Permanently
+                    </button>
+                </form>
+                @endif
+
+            </div>
 
                 </div>
             </div>
         @endforeach
     </div>
-    <div class="mt-4 d-flex justify-content-center">
-        {{ $blogs->links('pagination::simple-bootstrap-5') }}
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.toggle-comments').forEach(button => {
+                button.addEventListener('click', function() {
+                    const blogId = this.getAttribute('data-id');
+                    const commentBox = document.getElementById('comments-' + blogId);
+                    commentBox.style.display = commentBox.style.display === 'none' ? 'block' :
+                        'none';
+                });
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Like Comment (Admin only)
+        $(document).on('click', '.like-comment-btn', function() {
+            const commentId = $(this).data('id');
+            $.post(`/comments/${commentId}/like`, {
+                _token: '{{ csrf_token() }}'
+            }, function(res) {
+                $(`#like-count-${commentId}`).text(res.likes);
+            });
+        });
+
+        // Delete Comment
+        $(document).on('click', '.delete-comment-btn', function() {
+            const commentId = $(this).data('id');
+            if (confirm('Are you sure you want to delete this comment?')) {
+                $.ajax({
+                    url: `/comments/${commentId}`,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function() {
+                        $(`#comment-${commentId}`).remove();
+                    }
+                });
+            }
+        });
+
+        // Edit Comment (Your own only)
+        $(document).on('click', '.edit-comment-btn', function() {
+            const commentId = $(this).data('id');
+            const commentPara = $(`#comment-${commentId} p`);
+            const currentBody = commentPara.text().trim().split(':').slice(1).join(':').trim();
+            const newBody = prompt('Edit your comment:', currentBody);
+
+            if (newBody) {
+                $.ajax({
+                    url: `/comments/${commentId}`,
+                    type: 'PUT',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        body: newBody
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            commentPara.html(`<strong>${res.user_name}:</strong> ${res.body}`);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.message || 'Something went wrong');
+                    }
+                });
+            }
+        });
+    </script>
+
+
+
+<div class="mt-4 d-flex justify-content-center">
+    {{ $blogs->appends(['tab' => isset($isTrash) && $isTrash ? 'trash' : 'all'])->links('pagination::simple-bootstrap-5') }}
+</div>
 @endif
