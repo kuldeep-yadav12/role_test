@@ -89,11 +89,11 @@
                     @endforeach
 
                     {{-- comment form blog --}}
-                    <form id="comment-form" action="{{ route('comments.store') }}" method="POST" onsubmit="disableButton()">
-                        @csrf
+                    <form class="comment-form" action="{{ route('comments.store') }}" method="POST">
+                                              @csrf
                         <input type="hidden" name="blog_id" value="{{ $blog->id }}">
                         <textarea name="body" class="form-control mb-2" required></textarea>
-                        <button type="submit" id="comment-btn" class="btn btn-sm btn-primary">Comment</button>
+                        <button type="submit" class="btn btn-sm btn-primary comment-btn">Comment</button>
                     </form>
 
 
@@ -146,34 +146,21 @@
     @endforeach
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const likeButtons = document.querySelectorAll('.like-comment-btn');
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.comment-form').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            const submitBtn = form.querySelector('.comment-btn');
 
-        likeButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const commentId = this.getAttribute('data-id');
+            // Disable the button immediately
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Submitting...';
 
-                fetch(`/comments/${commentId}/like`, {
-                        method: 'POST'
-                        , headers: {
-                            'Content-Type': 'application/json'
-                            , 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        , }
-                    , })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.likes !== undefined) {
-                            document.getElementById(`like-count-${commentId}`).innerText = data.likes;
-                        }
-                    })
-                    .catch(err => {
-                        console.error("Like error:", err);
-                    });
-            });
+            // Let the form submit normally (to Laravel controller)
         });
     });
-
+});
 </script>
+
 
 <div class="mt-4 d-flex justify-content-center">
     {{ $blogs->appends(['tab' => isset($isTrash) && $isTrash ? 'trash' : 'all'])->links('pagination::simple-bootstrap-5') }}
