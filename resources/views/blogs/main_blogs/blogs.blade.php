@@ -90,7 +90,7 @@
 
                     {{-- comment form blog --}}
                     <form class="comment-form" action="{{ route('comments.store') }}" method="POST">
-                                              @csrf
+                        @csrf
                         <input type="hidden" name="blog_id" value="{{ $blog->id }}">
                         <textarea name="body" class="form-control mb-2" required></textarea>
                         <button type="submit" class="btn btn-sm btn-primary comment-btn">Comment</button>
@@ -146,19 +146,20 @@
     @endforeach
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.comment-form').forEach(function (form) {
-        form.addEventListener('submit', function (e) {
-            const submitBtn = form.querySelector('.comment-btn');
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.comment-form').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                const submitBtn = form.querySelector('.comment-btn');
 
-            // Disable the button immediately
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Submitting...';
+                // Disable the button immediately
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Submitting...';
 
-            // Let the form submit normally (to Laravel controller)
+                // Let the form submit normally (to Laravel controller)
+            });
         });
     });
-});
+
 </script>
 
 
